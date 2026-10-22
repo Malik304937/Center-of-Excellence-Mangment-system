@@ -1,0 +1,6 @@
+{
+  "name": "Center of Excellence Management System",
+  "description": "A comprehensive, responsive School Management System with attendance tracking, timetable management with conflict warnings, teacher schedules, role-based access, and data backup.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

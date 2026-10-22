@@ -1,0 +1,3490 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Center of Excellence Management System</title>
+  <meta name="description" content="Center of Excellence School Management System - Comprehensive portal for student records, attendance tracking, conflict-aware timetable scheduling, and faculty management." />
+  <meta property="og:title" content="Center of Excellence Management System" />
+  <meta property="og:description" content="Modern, responsive School Management System with Attendance Dashboard, Teachers schedules, Timetable conflict detection, and Admin controls." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Chart.js for High-Fidelity Responsive Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    /* =========================================================================
+       CSS VARIABLES & THEME DEFINITIONS
+       Theme Colors:
+       - COLOR 1: Navy Blue (#1e3a8a / #2563eb)
+       - COLOR 2: Emerald Green (#059669 / #10b981)
+       ========================================================================= */
+    :root {
+      --color-primary: #1e3a8a;
+      --color-primary-light: #3b82f6;
+      --color-primary-dark: #172554;
+      --color-secondary: #059669;
+      --color-secondary-light: #10b981;
+      --color-secondary-dark: #064e3b;
+      --color-accent: #f59e0b;
+      --color-danger: #ef4444;
+      --color-danger-bg: #fef2f2;
+      --color-success: #10b981;
+      --color-success-bg: #ecfdf5;
+      
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-card-subtle: #f1f5f9;
+      --border-color: #e2e8f0;
+      --border-color-strong: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-subtle: #94a3b8;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+    }
+
+    [data-theme="dark"] {
+      --bg-page: #0b1120;
+      --bg-card: #151f32;
+      --bg-card-subtle: #1e293b;
+      --border-color: #27354f;
+      --border-color-strong: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-subtle: #64748b;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5);
+      --color-danger-bg: #451a1a;
+      --color-success-bg: #064e3b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    h1, h2, h3, h4, .brand-font {
+      font-family: 'Outfit', 'Inter', sans-serif;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 18px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+      white-space: nowrap;
+      min-height: 40px;
+    }
+    .btn:active {
+      transform: scale(0.97);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    }
+    .btn-primary:hover {
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+      filter: brightness(1.08);
+    }
+    .btn-secondary {
+      background: linear-gradient(135deg, var(--color-secondary), var(--color-secondary-light));
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+    .btn-secondary:hover {
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+      filter: brightness(1.08);
+    }
+    .btn-outline {
+      background: var(--bg-card);
+      border-color: var(--border-color-strong);
+      color: var(--text-main);
+    }
+    .btn-outline:hover {
+      background: var(--bg-card-subtle);
+      border-color: var(--color-primary-light);
+    }
+    .btn-danger {
+      background: var(--color-danger);
+      color: #ffffff;
+    }
+    .btn-danger:hover {
+      filter: brightness(1.1);
+    }
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      min-height: 32px;
+      border-radius: var(--radius-sm);
+    }
+    .btn-icon {
+      padding: 8px;
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+    }
+
+    /* Live Animated Hero Gradient */
+    @keyframes heroGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .animated-hero-gradient {
+      background: linear-gradient(-45deg, #1e3a8a, #047857, #1d4ed8, #0f766e, #2563eb);
+      background-size: 300% 300%;
+      animation: heroGradient 12s ease infinite;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      transition: background-color 0.25s ease, border-color 0.25s ease;
+      backdrop-filter: blur(12px);
+    }
+    .nav-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+    .nav-brand-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 1.25rem;
+      box-shadow: 0 4px 10px rgba(30, 58, 138, 0.3);
+      flex-shrink: 0;
+    }
+    .nav-brand-text h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--text-main);
+    }
+    .nav-brand-text span {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-secondary-light);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-item {
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-item:hover, .nav-item.active {
+      color: var(--color-primary-light);
+      background: var(--bg-card-subtle);
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Admin Badge */
+    .admin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--color-secondary-light);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--color-secondary-light);
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    /* Breadcrumbs Bar */
+    .breadcrumbs-bar {
+      max-width: 1280px;
+      margin: 16px auto 0;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      overflow-x: auto;
+      white-space: nowrap;
+      padding-bottom: 2px;
+    }
+    .breadcrumb-item {
+      cursor: pointer;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+    .breadcrumb-item:hover {
+      color: var(--color-primary-light);
+    }
+    .breadcrumb-item.active {
+      color: var(--text-main);
+      font-weight: 700;
+      cursor: default;
+    }
+    .breadcrumb-sep {
+      color: var(--text-subtle);
+      font-size: 0.8rem;
+    }
+
+    /* Main Container */
+    .main-content {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px 20px 48px;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.25s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--color-primary-light);
+    }
+
+    /* Forms & Inputs */
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .form-control {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color-strong);
+      background: var(--bg-card);
+      color: var(--text-main);
+      outline: none;
+      transition: all 0.2s;
+    }
+    .form-control:focus {
+      border-color: var(--color-primary-light);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    /* Tables */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      -webkit-overflow-scrolling: touch;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    th {
+      background: var(--bg-card-subtle);
+      padding: 12px 16px;
+      font-weight: 700;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-color);
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    tr:hover td {
+      background: rgba(59, 130, 246, 0.02);
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      width: 100%;
+      max-width: 520px;
+      box-shadow: var(--shadow-xl);
+      transform: scale(0.95);
+      transition: transform 0.2s ease;
+      overflow: hidden;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-overlay.open .modal-content {
+      transform: scale(1);
+    }
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-header h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+    }
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      background: var(--bg-card-subtle);
+    }
+
+    /* Toasts */
+    #toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 150;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+    .toast {
+      pointer-events: auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 12px 18px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-xl);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      min-width: 280px;
+      max-width: 420px;
+      animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      border-left: 5px solid var(--color-primary-light);
+    }
+    .toast.success { border-left-color: var(--color-secondary-light); }
+    .toast.danger { border-left-color: var(--color-danger); }
+    .toast.warning { border-left-color: var(--color-accent); }
+    @keyframes toastIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes toastOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+
+    /* Tabs */
+    .tabs-nav {
+      display: flex;
+      gap: 6px;
+      border-bottom: 2px solid var(--border-color);
+      margin-bottom: 24px;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      padding: 12px 20px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      border: none;
+      background: transparent;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .tab-btn:hover {
+      color: var(--color-primary-light);
+    }
+    .tab-btn.active {
+      color: var(--color-primary-light);
+      border-bottom-color: var(--color-primary-light);
+    }
+
+    /* Attendance Toggles */
+    .att-toggle-group {
+      display: inline-flex;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+    .att-toggle-btn {
+      padding: 6px 14px;
+      border: none;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--bg-card-subtle);
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+    .att-toggle-btn.present.active {
+      background: var(--color-secondary-light);
+      color: #ffffff;
+    }
+    .att-toggle-btn.absent.active {
+      background: var(--color-danger);
+      color: #ffffff;
+    }
+    .att-toggle-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.85;
+    }
+
+    /* Timetable Grid */
+    .timetable-cell {
+      min-height: 90px;
+      padding: 8px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      background: var(--bg-card-subtle);
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+    .timetable-cell:hover {
+      border-color: var(--color-primary-light);
+      transform: translateY(-1px);
+    }
+    .timetable-cell.empty {
+      background: transparent;
+      border-style: dashed;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-subtle);
+    }
+    .timetable-cell.readonly {
+      cursor: default;
+    }
+    .timetable-cell.readonly:hover {
+      transform: none;
+      border-color: var(--border-color);
+    }
+
+    /* Subject Badges */
+    .subject-pill {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .sub-math { background: #dbeafe; color: #1e40af; }
+    .sub-physics { background: #fef3c7; color: #92400e; }
+    .sub-chemistry { background: #fee2e2; color: #991b1b; }
+    .sub-biology { background: #dcfce7; color: #166534; }
+    .sub-english { background: #f3e8ff; color: #6b21a8; }
+    .sub-computer { background: #cffafe; color: #155e75; }
+    .sub-other { background: #f1f5f9; color: #334155; }
+    [data-theme="dark"] .sub-math { background: #1e3a8a; color: #bfdbfe; }
+    [data-theme="dark"] .sub-physics { background: #78350f; color: #fde68a; }
+    [data-theme="dark"] .sub-chemistry { background: #7f1d1d; color: #fecaca; }
+    [data-theme="dark"] .sub-biology { background: #14532d; color: #bbf7d0; }
+    [data-theme="dark"] .sub-english { background: #581c87; color: #e9d5ff; }
+    [data-theme="dark"] .sub-computer { background: #164e63; color: #a5f3fc; }
+    [data-theme="dark"] .sub-other { background: #334155; color: #cbd5e1; }
+
+    /* Footer */
+    .app-footer {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border-color);
+      padding: 28px 20px;
+      margin-top: auto;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Mobile Responsive Utilities */
+    @media (max-width: 768px) {
+      .nav-container {
+        padding: 0 14px;
+        height: auto;
+        min-height: 64px;
+        flex-wrap: wrap;
+        padding-top: 8px;
+        padding-bottom: 8px;
+      }
+      .nav-links {
+        order: 3;
+        width: 100%;
+        overflow-x: auto;
+        padding-top: 6px;
+        border-top: 1px solid var(--border-color);
+      }
+      .hero-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .summary-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+      .classes-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Sticky Navigation -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand" onclick="navigateTo('home')">
+        <div class="nav-brand-logo">CE</div>
+        <div class="nav-brand-text">
+          <h1>Center of Excellence</h1>
+          <span>School Management System</span>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <a class="nav-item" id="nav-home" onclick="navigateTo('home')">
+          <span>🏛️</span> Home
+        </a>
+        <a class="nav-item" id="nav-dashboard" onclick="navigateTo('attendance-dashboard')">
+          <span>📊</span> Attendance Dashboard
+        </a>
+        <a class="nav-item" id="nav-teachers" onclick="navigateTo('teachers')">
+          <span>👨‍🏫</span> Teachers
+        </a>
+      </nav>
+
+      <div class="nav-actions">
+        <!-- Admin Mode Indicator Badge -->
+        <div id="admin-badge" class="admin-badge" style="display: none;">
+          <span class="pulse-dot"></span> Admin Mode
+        </div>
+
+        <!-- Export Data Button -->
+        <button class="btn btn-outline btn-sm" onclick="exportData()" title="Download JSON Backup">
+          <span>📥</span> <span class="hide-mobile">Export Data</span>
+        </button>
+
+        <!-- Import Data Button (Admin Only) -->
+        <button id="nav-import-btn" class="btn btn-outline btn-sm admin-only" onclick="openImportModal()" title="Import JSON Backup" style="display: none;">
+          <span>📤</span> <span class="hide-mobile">Import Data</span>
+        </button>
+
+        <!-- Admin Login / Logout Button -->
+        <button id="auth-btn" class="btn btn-primary btn-sm" onclick="handleAuthButtonClick()">
+          <span>🔑</span> Admin Login
+        </button>
+
+        <!-- Dark / Light Mode Toggle -->
+        <button class="btn btn-outline btn-icon" onclick="toggleTheme()" title="Toggle Theme" aria-label="Toggle theme">
+          <span id="theme-icon">🌙</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Breadcrumbs & Quick Back -->
+  <div class="breadcrumbs-bar">
+    <div class="breadcrumbs" id="breadcrumbs-container">
+      <!-- Injected by router -->
+    </div>
+    <div id="back-button-container">
+      <!-- Injected when on inner pages -->
+    </div>
+  </div>
+
+  <!-- Main View Container -->
+  <main class="main-content" id="app-content">
+    <!-- Rendered dynamically -->
+  </main>
+
+  <!-- Modals Container -->
+  <div id="modal-container"></div>
+
+  <!-- Toast Notification System -->
+  <div id="toast-container"></div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div style="max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; align-items: center;">
+      <p><strong>[Center of Excellence] Management System</strong> — Built with HTML, CSS & Vanilla JavaScript.</p>
+      <p>Created by: <span style="font-weight: 700; color: var(--color-primary-light);">[Muhammad Shahmeer Malik]</span></p>
+      <p style="font-size: 0.78rem; color: var(--text-subtle);">Data is stored securely in your browser's localStorage. Back up regularly with "Export Data".</p>
+    </div>
+  </footer>
+
+  <!-- Application Logic -->
+  <script>
+    // =========================================================================
+    // 8. DATA STRUCTURE & INITIAL SAMPLE DATA
+    // Edit this object directly to change starting school data
+    // =========================================================================
+    const INITIAL_SCHOOL_DATA = {
+      classes: [6, 7, 8, 9, 10],
+      sections: [
+        { id: "sec_6a", classNumber: 6, name: "Section A", incharge: "Mr. Ahmad Raza" },
+        { id: "sec_6b", classNumber: 6, name: "Section B", incharge: "Ms. Fatima Zahra" },
+        { id: "sec_7a", classNumber: 7, name: "Section A", incharge: "Mr. Usman Ali" },
+        { id: "sec_7b", classNumber: 7, name: "Section B", incharge: "Ms. Ayesha Noor" },
+        { id: "sec_8a", classNumber: 8, name: "Section A", incharge: "Mr. Bilal Hassan" },
+        { id: "sec_8b", classNumber: 8, name: "Section B", incharge: "Ms. Zainab Bibi" },
+        { id: "sec_9a", classNumber: 9, name: "Section A", incharge: "Mr. Salman Khan" },
+        { id: "sec_9b", classNumber: 9, name: "Section B", incharge: "Mr. Ahmad Raza" },
+        { id: "sec_10a", classNumber: 10, name: "Section A", incharge: "Mr. Usman Ali" },
+        { id: "sec_10b", classNumber: 10, name: "Section B", incharge: "Ms. Fatima Zahra" }
+      ],
+      students: [
+        // Class 6 - Section A
+        { id: "std_6a_1", sectionId: "sec_6a", rollNo: "1", name: "Hamza Tariq", fatherName: "Tariq Mehmood" },
+        { id: "std_6a_2", sectionId: "sec_6a", rollNo: "2", name: "Ali Raza", fatherName: "Ghulam Raza" },
+        { id: "std_6a_3", sectionId: "sec_6a", rollNo: "3", name: "Zainab Fatima", fatherName: "Muhammad Aslam" },
+        { id: "std_6a_4", sectionId: "sec_6a", rollNo: "4", name: "Bilal Ahmed", fatherName: "Ahmed Nawaz" },
+        { id: "std_6a_5", sectionId: "sec_6a", rollNo: "5", name: "Hassan Shah", fatherName: "Syed Shah" },
+        // Class 6 - Section B
+        { id: "std_6b_1", sectionId: "sec_6b", rollNo: "1", name: "Sara Khan", fatherName: "Imran Khan" },
+        { id: "std_6b_2", sectionId: "sec_6b", rollNo: "2", name: "Danish Malik", fatherName: "Shahid Malik" },
+        { id: "std_6b_3", sectionId: "sec_6b", rollNo: "3", name: "Areeba Noor", fatherName: "Noor Alam" },
+        { id: "std_6b_4", sectionId: "sec_6b", rollNo: "4", name: "Omer Farooq", fatherName: "Farooq Azam" },
+        { id: "std_6b_5", sectionId: "sec_6b", rollNo: "5", name: "Fatima Sana", fatherName: "Sanaullah" },
+        // Class 7 - Section A
+        { id: "std_7a_1", sectionId: "sec_7a", rollNo: "1", name: "Abdullah Rauf", fatherName: "Abdul Rauf" },
+        { id: "std_7a_2", sectionId: "sec_7a", rollNo: "2", name: "Maham Zahra", fatherName: "Syed Ali" },
+        { id: "std_7a_3", sectionId: "sec_7a", rollNo: "3", name: "Saad Sheikh", fatherName: "Sheikh Rasheed" },
+        { id: "std_7a_4", sectionId: "sec_7a", rollNo: "4", name: "Anum Javed", fatherName: "Javed Iqbal" },
+        { id: "std_7a_5", sectionId: "sec_7a", rollNo: "5", name: "Rehan Butt", fatherName: "Khalid Butt" },
+        // Class 7 - Section B
+        { id: "std_7b_1", sectionId: "sec_7b", rollNo: "1", name: "Khadija Bibi", fatherName: "Muhammad Akram" },
+        { id: "std_7b_2", sectionId: "sec_7b", rollNo: "2", name: "Zubair Khan", fatherName: "Akbar Khan" },
+        { id: "std_7b_3", sectionId: "sec_7b", rollNo: "3", name: "Nimra Siddique", fatherName: "Abu Bakr" },
+        { id: "std_7b_4", sectionId: "sec_7b", rollNo: "4", name: "Usama Munir", fatherName: "Munir Ahmed" },
+        { id: "std_7b_5", sectionId: "sec_7b", rollNo: "5", name: "Eman Fatima", fatherName: "Ijaz Hussain" },
+        // Class 8 - Section A
+        { id: "std_8a_1", sectionId: "sec_8a", rollNo: "1", name: "Mustafa Qureshi", fatherName: "Nasir Qureshi" },
+        { id: "std_8a_2", sectionId: "sec_8a", rollNo: "2", name: "Maryam Nawaz", fatherName: "Muhammad Nawaz" },
+        { id: "std_8a_3", sectionId: "sec_8a", rollNo: "3", name: "Taha Junaid", fatherName: "Junaid Akhtar" },
+        { id: "std_8a_4", sectionId: "sec_8a", rollNo: "4", name: "Laiba Arshad", fatherName: "Arshad Mehmood" },
+        { id: "std_8a_5", sectionId: "sec_8a", rollNo: "5", name: "Shahmeer Khan", fatherName: "Sajid Khan" },
+        // Class 8 - Section B
+        { id: "std_8b_1", sectionId: "sec_8b", rollNo: "1", name: "Ayaan Pasha", fatherName: "Faisal Pasha" },
+        { id: "std_8b_2", sectionId: "sec_8b", rollNo: "2", name: "Hira Mansoor", fatherName: "Mansoor Ahmed" },
+        { id: "std_8b_3", sectionId: "sec_8b", rollNo: "3", name: "Fahad Hashmi", fatherName: "Hashim Raza" },
+        { id: "std_8b_4", sectionId: "sec_8b", rollNo: "4", name: "Noor ul Ain", fatherName: "Zahid Ali" },
+        { id: "std_8b_5", sectionId: "sec_8b", rollNo: "5", name: "Danish Waseem", fatherName: "Waseem Akram" },
+        // Class 9 - Section A
+        { id: "std_9a_1", sectionId: "sec_9a", rollNo: "1", name: "Shahmeer Malik", fatherName: "Malik Tariq" },
+        { id: "std_9a_2", sectionId: "sec_9a", rollNo: "2", name: "Ahmed Zubair", fatherName: "Zubair Latif" },
+        { id: "std_9a_3", sectionId: "sec_9a", rollNo: "3", name: "Malaika Mir", fatherName: "Mirza Afzal" },
+        { id: "std_9a_4", sectionId: "sec_9a", rollNo: "4", name: "Haris Rauf", fatherName: "Rauf Ahmed" },
+        { id: "std_9a_5", sectionId: "sec_9a", rollNo: "5", name: "Zoya Qasim", fatherName: "Qasim Zia" },
+        // Class 9 - Section B
+        { id: "std_9b_1", sectionId: "sec_9b", rollNo: "1", name: "Farhan Saeed", fatherName: "Saeed Anwar" },
+        { id: "std_9b_2", sectionId: "sec_9b", rollNo: "2", name: "Sania Mirza", fatherName: "Mirza Baig" },
+        { id: "std_9b_3", sectionId: "sec_9b", rollNo: "3", name: "Waleed Sajjad", fatherName: "Sajjad Ali" },
+        { id: "std_9b_4", sectionId: "sec_9b", rollNo: "4", name: "Momina Tanveer", fatherName: "Tanveer Abbas" },
+        { id: "std_9b_5", sectionId: "sec_9b", rollNo: "5", name: "Zeeshan Haider", fatherName: "Haider Zaman" },
+        // Class 10 - Section A
+        { id: "std_10a_1", sectionId: "sec_10a", rollNo: "1", name: "Arham Tahir", fatherName: "Tahir Mahmood" },
+        { id: "std_10a_2", sectionId: "sec_10a", rollNo: "2", name: "Bismah Maroof", fatherName: "Maroof Khan" },
+        { id: "std_10a_3", sectionId: "sec_10a", rollNo: "3", name: "Shaheen Afridi", fatherName: "Ayaz Afridi" },
+        { id: "std_10a_4", sectionId: "sec_10a", rollNo: "4", name: "Khadija Tul Kubra", fatherName: "Hafiz Nisar" },
+        { id: "std_10a_5", sectionId: "sec_10a", rollNo: "5", name: "Daniyal Moin", fatherName: "Moin Akhtar" },
+        // Class 10 - Section B
+        { id: "std_10b_1", sectionId: "sec_10b", rollNo: "1", name: "Babar Azam", fatherName: "Azam Siddiqui" },
+        { id: "std_10b_2", sectionId: "sec_10b", rollNo: "2", name: "Nashra Sandhu", fatherName: "Sandhu Khan" },
+        { id: "std_10b_3", sectionId: "sec_10b", rollNo: "3", name: "Rizwan Ullah", fatherName: "Inam Ullah" },
+        { id: "std_10b_4", sectionId: "sec_10b", rollNo: "4", name: "Alizeh Shah", fatherName: "Shah Jahan" },
+        { id: "std_10b_5", sectionId: "sec_10b", rollNo: "5", name: "Naseem Shah", fatherName: "Abid Shah" }
+      ],
+      attendance: {},
+      teachers: [
+        { id: "t1", name: "Mr. Salman Khan", subject: "Mathematics" },
+        { id: "t2", name: "Ms. Fatima Zahra", subject: "Physics" },
+        { id: "t3", name: "Mr. Usman Ali", subject: "Chemistry" },
+        { id: "t4", name: "Ms. Ayesha Noor", subject: "Biology" },
+        { id: "t5", name: "Mr. Bilal Hassan", subject: "English" },
+        { id: "t6", name: "Mr. Ahmad Raza", subject: "Computer Science" }
+      ],
+      timetable: {
+        // Class 9 - Section A Filled Sample Timetable
+        "sec_9a_Monday_1": { subject: "Mathematics", teacherId: "t1", room: "Room 101" },
+        "sec_9a_Monday_2": { subject: "Physics", teacherId: "t2", room: "Science Lab" },
+        "sec_9a_Monday_3": { subject: "English", teacherId: "t5", room: "Room 101" },
+        "sec_9a_Monday_4": { subject: "Computer Science", teacherId: "t6", room: "Computer Lab" },
+        "sec_9a_Monday_5": { subject: "Chemistry", teacherId: "t3", room: "Chemistry Lab" },
+        "sec_9a_Monday_6": { subject: "Biology", teacherId: "t4", room: "Biology Lab" },
+        "sec_9a_Monday_7": { subject: "Mathematics", teacherId: "t1", room: "Room 101" },
+        "sec_9a_Monday_8": { subject: "Library", teacherId: "t5", room: "Library" },
+
+        "sec_9a_Tuesday_1": { subject: "Physics", teacherId: "t2", room: "Room 101" },
+        "sec_9a_Tuesday_2": { subject: "Mathematics", teacherId: "t1", room: "Room 101" },
+        "sec_9a_Tuesday_3": { subject: "Chemistry", teacherId: "t3", room: "Chemistry Lab" },
+        "sec_9a_Tuesday_4": { subject: "English", teacherId: "t5", room: "Room 101" },
+        "sec_9a_Tuesday_5": { subject: "Computer Science", teacherId: "t6", room: "Computer Lab" },
+        "sec_9a_Tuesday_6": { subject: "Biology", teacherId: "t4", room: "Room 101" },
+        "sec_9a_Tuesday_7": { subject: "Sports", teacherId: "t1", room: "Playground" },
+        "sec_9a_Tuesday_8": { subject: "Islamiyat", teacherId: "t3", room: "Room 101" },
+
+        "sec_9a_Wednesday_1": { subject: "Computer Science", teacherId: "t6", room: "Computer Lab" },
+        "sec_9a_Wednesday_2": { subject: "English", teacherId: "t5", room: "Room 101" },
+        "sec_9a_Wednesday_3": { subject: "Mathematics", teacherId: "t1", room: "Room 101" },
+        "sec_9a_Wednesday_4": { subject: "Physics", teacherId: "t2", room: "Science Lab" },
+        "sec_9a_Wednesday_5": { subject: "Chemistry", teacherId: "t3", room: "Room 101" },
+        "sec_9a_Wednesday_6": { subject: "Biology", teacherId: "t4", room: "Biology Lab" },
+        "sec_9a_Wednesday_7": { subject: "Urdu", teacherId: "t5", room: "Room 101" },
+        "sec_9a_Wednesday_8": { subject: "Study Hall", teacherId: "t2", room: "Room 101" },
+
+        "sec_9a_Thursday_1": { subject: "Mathematics", teacherId: "t1", room: "Room 101" },
+        "sec_9a_Thursday_2": { subject: "Chemistry", teacherId: "t3", room: "Chemistry Lab" },
+        "sec_9a_Thursday_3": { subject: "Physics", teacherId: "t2", room: "Room 101" },
+        "sec_9a_Thursday_4": { subject: "English", teacherId: "t5", room: "Room 101" },
+        "sec_9a_Thursday_5": { subject: "Biology", teacherId: "t4", room: "Room 101" },
+        "sec_9a_Thursday_6": { subject: "Computer Science", teacherId: "t6", room: "Computer Lab" },
+        "sec_9a_Thursday_7": { subject: "Library", teacherId: "t4", room: "Library" },
+        "sec_9a_Thursday_8": { subject: "Sports", teacherId: "t6", room: "Playground" },
+
+        "sec_9a_Friday_1": { subject: "English", teacherId: "t5", room: "Room 101" },
+        "sec_9a_Friday_2": { subject: "Mathematics", teacherId: "t1", room: "Room 101" },
+        "sec_9a_Friday_3": { subject: "Physics", teacherId: "t2", room: "Science Lab" },
+        "sec_9a_Friday_4": { subject: "Islamiyat", teacherId: "t3", room: "Room 101" },
+        "sec_9a_Friday_5": { subject: "Computer Science", teacherId: "t6", room: "Computer Lab" },
+        "sec_9a_Friday_6": { subject: "Chemistry", teacherId: "t3", room: "Chemistry Lab" },
+        "sec_9a_Friday_7": { subject: "Biology", teacherId: "t4", room: "Biology Lab" },
+        "sec_9a_Friday_8": { subject: "Mentoring", teacherId: "t1", room: "Room 101" },
+
+        "sec_9a_Saturday_1": { subject: "Mathematics Test", teacherId: "t1", room: "Room 101" },
+        "sec_9a_Saturday_2": { subject: "Physics Test", teacherId: "t2", room: "Room 101" },
+        "sec_9a_Saturday_3": { subject: "Chemistry Quiz", teacherId: "t3", room: "Chemistry Lab" },
+        "sec_9a_Saturday_4": { subject: "English Essay", teacherId: "t5", room: "Room 101" },
+        "sec_9a_Saturday_5": { subject: "Computer Practical", teacherId: "t6", room: "Computer Lab" },
+        "sec_9a_Saturday_6": { subject: "Biology Discussion", teacherId: "t4", room: "Room 101" },
+        "sec_9a_Saturday_7": { subject: "Debate & Speech", teacherId: "t5", room: "Room 101" },
+        "sec_9a_Saturday_8": { subject: "Assembly & Awards", teacherId: "t1", room: "Room 101" },
+
+        // Demonstrating conflict detection setup in Class 10:
+        "sec_10a_Monday_1": { subject: "Chemistry", teacherId: "t3", room: "Room 102" },
+        "sec_10a_Monday_2": { subject: "Mathematics", teacherId: "t1", room: "Room 102" }
+      },
+      schoolInfo: {
+        name: "Center of Excellence",
+        creator: "Muhammad Shahmeer Malik",
+        principal: "Dr. Arshad Mehmood",
+        vicePrincipal: "Prof. Tariq Jamil"
+      }
+    };
+
+    // Helper: Generate sample past 7 days attendance if empty
+    function seedSampleAttendance(data) {
+      const today = new Date();
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(today);
+        d.setDate(today.getDate() - i);
+        const dateStr = d.toISOString().split('T')[0];
+        
+        data.sections.forEach(sec => {
+          const key = `${sec.id}_${dateStr}`;
+          if (!data.attendance[key]) {
+            data.attendance[key] = {};
+            const secStudents = data.students.filter(s => s.sectionId === sec.id);
+            secStudents.forEach((st, idx) => {
+              // 85-95% attendance simulation
+              const isAbsent = (idx === 4 && (i % 2 === 0)) || (idx === 3 && i === 1);
+              data.attendance[key][st.id] = isAbsent ? "absent" : "present";
+            });
+          }
+        });
+      }
+    }
+
+    // =========================================================================
+    // STATE & STORAGE CONTROLLER
+    // =========================================================================
+    const STORAGE_KEY = "coe_school_management_system_data";
+    const SESSION_AUTH_KEY = "coe_admin_session_auth";
+    const THEME_KEY = "coe_theme_preference";
+    const DAYS_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const LECTURES = [1, 2, 3, 4, 5, 6, 7, 8];
+    const LECTURE_TIMES = [
+      "08:00 - 08:45",
+      "08:45 - 09:30",
+      "09:30 - 10:15",
+      "10:15 - 11:00",
+      "11:30 - 12:15",
+      "12:15 - 01:00",
+      "01:00 - 01:45",
+      "01:45 - 02:30"
+    ];
+
+    // Robust timetable key parser: key format is `${sectionId}_${day}_${lecture}`
+    function parseTimetableKey(key) {
+      for (const day of DAYS_OF_WEEK) {
+        const marker = `_${day}_`;
+        const idx = key.indexOf(marker);
+        if (idx !== -1) {
+          const sectionId = key.substring(0, idx);
+          const lecture = parseInt(key.substring(idx + marker.length), 10);
+          return { sectionId, day, lecture };
+        }
+      }
+      return null;
+    }
+
+    function loadData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && Array.isArray(parsed.classes)) {
+            seedSampleAttendance(parsed);
+            return parsed;
+          }
+        }
+      } catch (e) {
+        console.error("Failed to load data from localStorage", e);
+      }
+      // Return fresh copy of initial data
+      const fresh = JSON.parse(JSON.stringify(INITIAL_SCHOOL_DATA));
+      seedSampleAttendance(fresh);
+      saveData(fresh);
+      return fresh;
+    }
+
+    function saveData(dataToSave = appData) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+      } catch (e) {
+        console.error("Failed to save data to localStorage", e);
+        showToast("Error saving data to browser storage", "danger");
+      }
+    }
+
+    let appData = loadData();
+    let currentUserRole = sessionStorage.getItem(SESSION_AUTH_KEY) === "true" ? "admin" : "visitor";
+    let currentRoute = { page: "home", params: {} };
+    let currentTheme = localStorage.getItem(THEME_KEY) || "light";
+
+    // Initialize Theme
+    document.documentElement.setAttribute("data-theme", currentTheme);
+    updateThemeIcon();
+
+    // =========================================================================
+    // ROUTER & NAVIGATION
+    // =========================================================================
+    function navigateTo(page, params = {}) {
+      currentRoute = { page, params };
+      renderApp();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderApp() {
+      updateNavbarUI();
+      renderBreadcrumbs();
+      renderActivePage();
+      applyRolePermissions();
+    }
+
+    function updateNavbarUI() {
+      // Nav active classes
+      document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
+      if (currentRoute.page === "home") document.getElementById("nav-home")?.classList.add("active");
+      if (currentRoute.page === "attendance-dashboard") document.getElementById("nav-dashboard")?.classList.add("active");
+      if (currentRoute.page === "teachers") document.getElementById("nav-teachers")?.classList.add("active");
+
+      // Admin badge and buttons
+      const adminBadge = document.getElementById("admin-badge");
+      const authBtn = document.getElementById("auth-btn");
+      const importBtn = document.getElementById("nav-import-btn");
+
+      if (currentUserRole === "admin") {
+        if (adminBadge) adminBadge.style.display = "inline-flex";
+        if (importBtn) importBtn.style.display = "inline-flex";
+        if (authBtn) {
+          authBtn.className = "btn btn-outline btn-sm";
+          authBtn.innerHTML = `<span>🚪</span> Logout`;
+        }
+      } else {
+        if (adminBadge) adminBadge.style.display = "none";
+        if (importBtn) importBtn.style.display = "none";
+        if (authBtn) {
+          authBtn.className = "btn btn-primary btn-sm";
+          authBtn.innerHTML = `<span>🔑</span> Admin Login`;
+        }
+      }
+    }
+
+    function applyRolePermissions() {
+      // Toggle all .admin-only elements
+      const adminEls = document.querySelectorAll(".admin-only");
+      adminEls.forEach(el => {
+        el.style.display = (currentUserRole === "admin") ? "" : "none";
+      });
+    }
+
+    function renderBreadcrumbs() {
+      const container = document.getElementById("breadcrumbs-container");
+      const backContainer = document.getElementById("back-button-container");
+      if (!container) return;
+
+      let crumbs = [];
+      let backBtnHtml = "";
+
+      if (currentRoute.page === "home") {
+        crumbs = [`<span class="breadcrumb-item active">🏛️ Home</span>`];
+        backBtnHtml = "";
+      } else if (currentRoute.page === "class") {
+        const cls = currentRoute.params.classNumber;
+        crumbs = [
+          `<a class="breadcrumb-item" onclick="navigateTo('home')">Home</a>`,
+          `<span class="breadcrumb-sep">/</span>`,
+          `<span class="breadcrumb-item active">Class ${cls}</span>`
+        ];
+        backBtnHtml = `<button class="btn btn-outline btn-sm" onclick="navigateTo('home')">← Back to Home</button>`;
+      } else if (currentRoute.page === "section") {
+        const secId = currentRoute.params.sectionId;
+        const sec = appData.sections.find(s => s.id === secId);
+        const cls = sec ? sec.classNumber : 9;
+        const secName = sec ? sec.name : "Section";
+        crumbs = [
+          `<a class="breadcrumb-item" onclick="navigateTo('home')">Home</a>`,
+          `<span class="breadcrumb-sep">/</span>`,
+          `<a class="breadcrumb-item" onclick="navigateTo('class', { classNumber: ${cls} })">Class ${cls}</a>`,
+          `<span class="breadcrumb-sep">/</span>`,
+          `<span class="breadcrumb-item active">${secName}</span>`
+        ];
+        backBtnHtml = `<button class="btn btn-outline btn-sm" onclick="navigateTo('class', { classNumber: ${cls} })">← Back to Class ${cls}</button>`;
+      } else if (currentRoute.page === "attendance-dashboard") {
+        crumbs = [
+          `<a class="breadcrumb-item" onclick="navigateTo('home')">Home</a>`,
+          `<span class="breadcrumb-sep">/</span>`,
+          `<span class="breadcrumb-item active">📊 Attendance Dashboard</span>`
+        ];
+        backBtnHtml = `<button class="btn btn-outline btn-sm" onclick="navigateTo('home')">← Back to Home</button>`;
+      } else if (currentRoute.page === "teachers") {
+        crumbs = [
+          `<a class="breadcrumb-item" onclick="navigateTo('home')">Home</a>`,
+          `<span class="breadcrumb-sep">/</span>`,
+          `<span class="breadcrumb-item active">👨‍🏫 Teachers Directory</span>`
+        ];
+        backBtnHtml = `<button class="btn btn-outline btn-sm" onclick="navigateTo('home')">← Back to Home</button>`;
+      }
+
+      container.innerHTML = crumbs.join(" ");
+      if (backContainer) backContainer.innerHTML = backBtnHtml;
+    }
+
+    function renderActivePage() {
+      const main = document.getElementById("app-content");
+      if (!main) return;
+
+      switch (currentRoute.page) {
+        case "home":
+          main.innerHTML = getHomePageHtml();
+          break;
+        case "class":
+          main.innerHTML = getClassPageHtml(currentRoute.params.classNumber);
+          break;
+        case "section":
+          main.innerHTML = getSectionPageHtml(currentRoute.params.sectionId, currentRoute.params.tab || "students");
+          initSectionPageScripts(currentRoute.params.sectionId, currentRoute.params.tab || "students");
+          break;
+        case "attendance-dashboard":
+          main.innerHTML = getAttendanceDashboardHtml();
+          initAttendanceDashboardCharts();
+          break;
+        case "teachers":
+          main.innerHTML = getTeachersPageHtml();
+          break;
+        default:
+          main.innerHTML = `<div class="card"><p>Page not found</p></div>`;
+      }
+    }
+
+    // =========================================================================
+    // 1. ROLES AND LOGIN LOGIC
+    // =========================================================================
+    function handleAuthButtonClick() {
+      if (currentUserRole === "admin") {
+        // Logout
+        currentUserRole = "visitor";
+        sessionStorage.removeItem(SESSION_AUTH_KEY);
+        showToast("Logged out successfully. You are now in Visitor mode.", "info");
+        renderApp();
+      } else {
+        // Open Admin Login Popup
+        openAdminLoginModal();
+      }
+    }
+
+    function openAdminLoginModal() {
+      const modal = document.createElement("div");
+      modal.className = "modal-overlay open";
+      modal.id = "admin-login-modal";
+      modal.innerHTML = `
+        <div class="modal-content" style="max-width: 400px;">
+          <div class="modal-header">
+            <h3>🔐 Admin Login</h3>
+            <button class="btn btn-outline btn-sm" onclick="closeModal('admin-login-modal')">✕</button>
+          </div>
+          <div class="modal-body">
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">
+              Enter administrative password to manage sections, students, attendance, and timetables.
+            </p>
+            <div class="form-group">
+              <label class="form-label" for="admin-pwd-input">Password</label>
+              <input type="password" id="admin-pwd-input" class="form-control" placeholder="Enter admin password..." autofocus onkeydown="if(event.key==='Enter') submitAdminLogin()" />
+            </div>
+            <div id="login-error-msg" style="display: none; color: var(--color-danger); font-size: 0.85rem; font-weight: 600; margin-top: 8px;">
+              ⚠️ Wrong password
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-subtle); margin-top: 12px; background: var(--bg-card-subtle); padding: 8px 12px; border-radius: var(--radius-sm);">
+              Demo Hint: Password is <code>merimarzi</code>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('admin-login-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitAdminLogin()">Login as Admin</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      setTimeout(() => document.getElementById("admin-pwd-input")?.focus(), 100);
+    }
+
+    function submitAdminLogin() {
+      const pwdInput = document.getElementById("admin-pwd-input");
+      const errorMsg = document.getElementById("login-error-msg");
+      if (!pwdInput) return;
+
+      if (pwdInput.value === "merimarzi") {
+        currentUserRole = "admin";
+        sessionStorage.setItem(SESSION_AUTH_KEY, "true");
+        closeModal("admin-login-modal");
+        showToast("Welcome Admin! Administrative controls are now enabled.", "success");
+        renderApp();
+      } else {
+        if (errorMsg) {
+          errorMsg.style.display = "block";
+          pwdInput.classList.add("border-danger");
+        }
+      }
+    }
+
+    // =========================================================================
+    // 3. HOME PAGE
+    // =========================================================================
+    function getHomePageHtml() {
+      const totalStudents = appData.students.length;
+      const totalClasses = appData.classes.length;
+      const totalSections = appData.sections.length;
+      const totalTeachers = appData.teachers.length;
+
+      const pName = appData.schoolInfo?.principal || "Dr. Arshad Mehmood";
+      const vpName = appData.schoolInfo?.vicePrincipal || "Prof. Tariq Jamil";
+
+      // Class cards markup
+      const classCardsHtml = appData.classes.map(cls => {
+        const sectionsInClass = appData.sections.filter(s => s.classNumber === cls);
+        const sectionIds = sectionsInClass.map(s => s.id);
+        const studentsInClass = appData.students.filter(st => sectionIds.includes(st.sectionId)).length;
+
+        return `
+          <div class="card card-hover" style="cursor: pointer;" onclick="navigateTo('class', { classNumber: ${cls} })">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 48px; height: 48px; border-radius: var(--radius-md); background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary)); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800;">
+                  ${cls}
+                </div>
+                <div>
+                  <h3 style="font-size: 1.25rem; font-weight: 700;">Class ${cls}</h3>
+                  <p style="color: var(--text-muted); font-size: 0.85rem;">Secondary Wing</p>
+                </div>
+              </div>
+              <span class="btn btn-outline btn-sm">View Class →</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background: var(--bg-card-subtle); padding: 12px; border-radius: var(--radius-md);">
+              <div>
+                <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Sections</span>
+                <p style="font-size: 1.25rem; font-weight: 700; color: var(--color-primary-light);">${sectionsInClass.length}</p>
+              </div>
+              <div>
+                <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Students</span>
+                <p style="font-size: 1.25rem; font-weight: 700; color: var(--color-secondary-light);">${studentsInClass}</p>
+              </div>
+            </div>
+
+            <div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px;">
+              ${sectionsInClass.map(s => `
+                <span style="font-size: 0.75rem; background: var(--bg-card); border: 1px solid var(--border-color); padding: 3px 8px; border-radius: 4px; color: var(--text-muted);">
+                  ${s.name}
+                </span>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      return `
+        <!-- Hero Section with Live Animated Gradient -->
+        <section class="animated-hero-gradient" style="border-radius: var(--radius-xl); padding: 40px 32px; color: #ffffff; margin-bottom: 32px; box-shadow: var(--shadow-lg); position: relative; overflow: hidden;">
+          <div style="max-width: 800px; position: relative; z-index: 2;">
+            <div style="display: inline-block; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(8px); padding: 6px 14px; border-radius: 9999px; font-size: 0.82rem; font-weight: 700; margin-bottom: 16px; letter-spacing: 0.5px;">
+              CENTER OF EXCELLENCE ACADEMIC PORTAL
+            </div>
+            <h1 style="font-size: 2.5rem; font-weight: 800; line-height: 1.15; margin-bottom: 12px; color: #ffffff;">
+              [Center of Excellence] Management System
+            </h1>
+            <p style="font-size: 1.05rem; opacity: 0.95; margin-bottom: 24px; max-width: 650px;">
+              Streamlined academic administration, daily attendance tracking, automated conflict detection in class schedules, and real-time student records.
+            </p>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px;">
+              <button class="btn" style="background: #ffffff; color: var(--color-primary-dark); font-weight: 700;" onclick="navigateTo('attendance-dashboard')">
+                <span>📊</span> View Attendance Dashboard
+              </button>
+              <button class="btn" style="background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4); color: #fff;" onclick="navigateTo('teachers')">
+                <span>👨‍🏫</span> View Faculty Schedules
+              </button>
+            </div>
+          </div>
+
+          <!-- Creator & Leadership Floating Card -->
+          <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(255, 255, 255, 0.25); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255, 255, 255, 0.25); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                👨‍💻
+              </div>
+              <div>
+                <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">System Architect</span>
+                <p style="font-weight: 700; font-size: 0.95rem;">Created by: [Muhammad Shahmeer Malik]</p>
+              </div>
+            </div>
+
+            <!-- Leadership Info (Editable by Admin) -->
+            <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+              <div>
+                <span style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Principal</span>
+                <p style="font-weight: 700; font-size: 0.95rem;">${escapeHtml(pName)}</p>
+              </div>
+              <div style="width: 1px; height: 28px; background: rgba(255,255,255,0.3);"></div>
+              <div>
+                <span style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Vice Principal</span>
+                <p style="font-weight: 700; font-size: 0.95rem;">${escapeHtml(vpName)}</p>
+              </div>
+              <button class="btn btn-sm admin-only" style="background: rgba(255,255,255,0.25); color: #fff; border: 1px solid rgba(255,255,255,0.4);" onclick="openEditLeadershipModal()">
+                ✏️ Edit Leadership
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Summary Cards Grid -->
+        <div class="summary-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 32px;">
+          <div class="card" style="display: flex; align-items: center; gap: 16px;">
+            <div style="width: 52px; height: 52px; border-radius: var(--radius-lg); background: rgba(59, 130, 246, 0.12); color: var(--color-primary-light); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+              👥
+            </div>
+            <div>
+              <p style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Total Students</p>
+              <h3 style="font-size: 1.75rem; font-weight: 800; color: var(--text-main);">${totalStudents}</h3>
+            </div>
+          </div>
+
+          <div class="card" style="display: flex; align-items: center; gap: 16px;">
+            <div style="width: 52px; height: 52px; border-radius: var(--radius-lg); background: rgba(16, 185, 129, 0.12); color: var(--color-secondary-light); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+              🏫
+            </div>
+            <div>
+              <p style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Total Classes</p>
+              <h3 style="font-size: 1.75rem; font-weight: 800; color: var(--text-main);">${totalClasses}</h3>
+            </div>
+          </div>
+
+          <div class="card" style="display: flex; align-items: center; gap: 16px;">
+            <div style="width: 52px; height: 52px; border-radius: var(--radius-lg); background: rgba(245, 158, 11, 0.12); color: var(--color-accent); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+              📑
+            </div>
+            <div>
+              <p style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Total Sections</p>
+              <h3 style="font-size: 1.75rem; font-weight: 800; color: var(--text-main);">${totalSections}</h3>
+            </div>
+          </div>
+
+          <div class="card" style="display: flex; align-items: center; gap: 16px;">
+            <div style="width: 52px; height: 52px; border-radius: var(--radius-lg); background: rgba(139, 92, 246, 0.12); color: #8b5cf6; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+              👨‍🏫
+            </div>
+            <div>
+              <p style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Faculty Members</p>
+              <h3 style="font-size: 1.75rem; font-weight: 800; color: var(--text-main);">${totalTeachers}</h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- Five Clickable Class Cards -->
+        <div style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
+          <div>
+            <h2 style="font-size: 1.45rem; font-weight: 700;">Academic Classes (6 to 10)</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Select any class below to inspect sections, student rosters, daily attendance, and weekly timetables.</p>
+          </div>
+        </div>
+
+        <div class="classes-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+          ${classCardsHtml}
+        </div>
+      `;
+    }
+
+    // Modal: Edit Principal & Vice Principal (Admin only)
+    function openEditLeadershipModal() {
+      const pName = appData.schoolInfo?.principal || "";
+      const vpName = appData.schoolInfo?.vicePrincipal || "";
+
+      const modal = document.createElement("div");
+      modal.className = "modal-overlay open";
+      modal.id = "leadership-modal";
+      modal.innerHTML = `
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>🏫 Update School Leadership</h3>
+            <button class="btn btn-outline btn-sm" onclick="closeModal('leadership-modal')">✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label" for="lead-principal">Principal Name</label>
+              <input type="text" id="lead-principal" class="form-control" value="${escapeHtml(pName)}" placeholder="e.g. Dr. Arshad Mehmood" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="lead-vp">Vice Principal Name</label>
+              <input type="text" id="lead-vp" class="form-control" value="${escapeHtml(vpName)}" placeholder="e.g. Prof. Tariq Jamil" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('leadership-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="saveLeadership()">Save Changes</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    function saveLeadership() {
+      const pInput = document.getElementById("lead-principal");
+      const vpInput = document.getElementById("lead-vp");
+      if (!pInput || !vpInput) return;
+
+      if (!appData.schoolInfo) appData.schoolInfo = {};
+      appData.schoolInfo.principal = pInput.value.trim() || "Principal";
+      appData.schoolInfo.vicePrincipal = vpInput.value.trim() || "Vice Principal";
+
+      saveData();
+      closeModal("leadership-modal");
+      showToast("School leadership updated successfully", "success");
+      renderApp();
+    }
+
+    // =========================================================================
+    // 4. CLASS PAGE
+    // =========================================================================
+    function getClassPageHtml(classNumber) {
+      const cls = parseInt(classNumber, 10);
+      const sections = appData.sections.filter(s => s.classNumber === cls);
+      const sectionIds = sections.map(s => s.id);
+      const totalStudents = appData.students.filter(st => sectionIds.includes(st.sectionId)).length;
+
+      const sectionsHtml = sections.length === 0 
+        ? `<div class="card" style="grid-column: 1 / -1; text-align: center; padding: 48px 20px; color: var(--text-muted);">
+             <span style="font-size: 2.5rem; display: block; margin-bottom: 12px;">📂</span>
+             <h3>No sections created yet for Class ${cls}</h3>
+             <p style="margin-top: 6px;">Admins can add a new section using the "Add Section" button above.</p>
+           </div>`
+        : sections.map(sec => {
+            const count = appData.students.filter(st => st.sectionId === sec.id).length;
+            return `
+              <div class="card card-hover" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                  <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 12px;">
+                    <div>
+                      <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-main);">${escapeHtml(sec.name)}</h3>
+                      <p style="font-size: 0.82rem; color: var(--text-muted);">Class ${cls}</p>
+                    </div>
+                    <span style="background: rgba(16, 185, 129, 0.12); color: var(--color-secondary-light); font-weight: 700; font-size: 0.8rem; padding: 4px 10px; border-radius: 9999px;">
+                      ${count} Students
+                    </span>
+                  </div>
+
+                  <div style="background: var(--bg-card-subtle); padding: 12px; border-radius: var(--radius-md); margin-bottom: 16px;">
+                    <span style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Section Incharge</span>
+                    <div style="display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.95rem;">
+                      <span>👨‍🏫</span> ${escapeHtml(sec.incharge || "Not Assigned")}
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <button class="btn btn-primary" style="width: 100%; margin-bottom: 8px;" onclick="navigateTo('section', { sectionId: '${sec.id}', tab: 'students' })">
+                    Open Section Portal →
+                  </button>
+
+                  <!-- Admin Edit / Delete Actions -->
+                  <div class="admin-only" style="display: flex; gap: 8px;">
+                    <button class="btn btn-outline btn-sm" style="flex: 1;" onclick="openEditSectionModal('${sec.id}')">
+                      ✏️ Edit
+                    </button>
+                    <button class="btn btn-danger btn-sm" style="flex: 1;" onclick="confirmDeleteSection('${sec.id}')">
+                      🗑️ Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+      return `
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 24px;">
+          <div>
+            <h1 style="font-size: 2rem; font-weight: 800;">Class ${cls}</h1>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">
+              Total Students in Whole Class: <strong style="color: var(--color-secondary-light); font-size: 1.1rem;">${totalStudents}</strong> (Sum of all sections)
+            </p>
+          </div>
+
+          <!-- Admin Add Section -->
+          <div class="admin-only">
+            <button class="btn btn-secondary" onclick="openAddSectionModal(${cls})">
+              <span>➕</span> Add Section
+            </button>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+          ${sectionsHtml}
+        </div>
+      `;
+    }
+
+    // Modal: Add Section
+    function openAddSectionModal(classNumber) {
+      const teachersOptions = appData.teachers.map(t => `<option value="${escapeHtml(t.name)}">${escapeHtml(t.name)} (${escapeHtml(t.subject)})</option>`).join('');
+
+      const modal = document.createElement("div");
+      modal.className = "modal-overlay open";
+      modal.id = "add-section-modal";
+      modal.innerHTML = `
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>➕ Add New Section (Class ${classNumber})</h3>
+            <button class="btn btn-outline btn-sm" onclick="closeModal('add-section-modal')">✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label" for="new-sec-name">Section Name *</label>
+              <input type="text" id="new-sec-name" class="form-control" placeholder="e.g. Section C" autofocus />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="new-sec-incharge">Section Incharge</label>
+              <select id="new-sec-incharge" class="form-control">
+                <option value="">-- Choose or type incharge --</option>
+                ${teachersOptions}
+              </select>
+            </div>
+            <div id="add-sec-error" style="display: none; color: var(--color-danger); font-size: 0.85rem; font-weight: 600;"></div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('add-section-modal')">Cancel</button>
+            <button class="btn btn-secondary" onclick="submitAddSection(${classNumber})">Create Section</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    function submitAddSection(classNumber) {
+      const nameInput = document.getElementById("new-sec-name");
+      const inchargeInput = document.getElementById("new-sec-incharge");
+      const errorDiv = document.getElementById("add-sec-error");
+      if (!nameInput) return;
+
+      const name = nameInput.value.trim();
+      const incharge = inchargeInput ? inchargeInput.value.trim() : "";
+
+      if (!name) {
+        errorDiv.textContent = "Please enter a section name (e.g. Section C).";
+        errorDiv.style.display = "block";
+        return;
+      }
+
+      // Check duplicate section name in the same class
+      const exists = appData.sections.some(s => s.classNumber === classNumber && s.name.toLowerCase() === name.toLowerCase());
+      if (exists) {
+        errorDiv.textContent = `A section named "${name}" already exists in Class ${classNumber}. Please choose another name.`;
+        errorDiv.style.display = "block";
+        return;
+      }
+
+      const newId = `sec_${classNumber}_${Date.now()}`;
+      appData.sections.push({
+        id: newId,
+        classNumber: classNumber,
+        name: name,
+        incharge: incharge || "Not Assigned"
+      });
+
+      saveData();
+      closeModal("add-section-modal");
+      showToast(`Section "${name}" added to Class ${classNumber}!`, "success");
+      renderApp();
+    }
+
+    // Modal: Edit Section
+    function openEditSectionModal(sectionId) {
+      const sec = appData.sections.find(s => s.id === sectionId);
+      if (!sec) return;
+
+      const teachersOptions = appData.teachers.map(t => {
+        const isSelected = (sec.incharge === t.name) ? "selected" : "";
+        return `<option value="${escapeHtml(t.name)}" ${isSelected}>${escapeHtml(t.name)} (${escapeHtml(t.subject)})</option>`;
+      }).join('');
+
+      const modal = document.createElement("div");
+      modal.className = "modal-overlay open";
+      modal.id = "edit-section-modal";
+      modal.innerHTML = `
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>✏️ Edit Section (${escapeHtml(sec.name)})</h3>
+            <button class="btn btn-outline btn-sm" onclick="closeModal('edit-section-modal')">✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label" for="edit-sec-name">Section Name *</label>
+              <input type="text" id="edit-sec-name" class="form-control" value="${escapeHtml(sec.name)}" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-sec-incharge">Section Incharge</label>
+              <select id="edit-sec-incharge" class="form-control">
+                <option value="">-- Choose incharge --</option>
+                ${teachersOptions}
+              </select>
+            </div>
+            <div id="edit-sec-error" style="display: none; color: var(--color-danger); font-size: 0.85rem; font-weight: 600;"></div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('edit-section-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitEditSection('${sec.id}')">Save Changes</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    function submitEditSection(sectionId) {
+      const sec = appData.sections.find(s => s.id === sectionId);
+      if (!sec) return;
+
+      const nameInput = document.getElementById("edit-sec-name");
+      const inchargeInput = document.getElementById("edit-sec-incharge");
+      const errorDiv = document.getElementById("edit-sec-error");
+      if (!nameInput) return;
+
+      const newName = nameInput.value.trim();
+      const newIncharge = inchargeInput ? inchargeInput.value.trim() : "";
+
+      if (!newName) {
+        errorDiv.textContent = "Section name cannot be empty.";
+        errorDiv.style.display = "block";
+        return;
+      }
+
+      // Check duplicate
+      const duplicate = appData.sections.some(s => s.id !== sectionId && s.classNumber === sec.classNumber && s.name.toLowerCase() === newName.toLowerCase());
+      if (duplicate) {
+        errorDiv.textContent = `Another section named "${newName}" already exists in Class ${sec.classNumber}.`;
+        errorDiv.style.display = "block";
+        return;
+      }
+
+      sec.name = newName;
+      sec.incharge = newIncharge || "Not Assigned";
+      saveData();
+      closeModal("edit-section-modal");
+      showToast(`Section updated to "${newName}"!`, "success");
+      renderApp();
+    }
+
+    function confirmDeleteSection(sectionId) {
+      const sec = appData.sections.find(s => s.id === sectionId);
+      if (!sec) return;
+
+      const studentCount = appData.students.filter(s => s.sectionId === sectionId).length;
+
+      openConfirmDialog({
+        title: `Delete Section ${sec.name}?`,
+        message: `Are you sure you want to delete ${sec.name} of Class ${sec.classNumber}? WARNING: This action will also delete all ${studentCount} students and associated timetable entries in this section!`,
+        confirmBtnText: "Yes, Delete Section",
+        danger: true,
+        onConfirm: () => {
+          // Remove students in section
+          appData.students = appData.students.filter(st => st.sectionId !== sectionId);
+          // Remove timetable entries for section
+          for (const key in appData.timetable) {
+            const parsed = parseTimetableKey(key);
+            if (parsed && parsed.sectionId === sectionId) {
+              delete appData.timetable[key];
+            }
+          }
+          // Remove attendance entries for section
+          for (const key in appData.attendance) {
+            if (key.startsWith(`${sectionId}_`)) {
+              delete appData.attendance[key];
+            }
+          }
+          // Remove section
+          appData.sections = appData.sections.filter(s => s.id !== sectionId);
+
+          saveData();
+          showToast(`Section ${sec.name} and its students were deleted`, "danger");
+          renderApp();
+        }
+      });
+    }
+
+    // =========================================================================
+    // 5. SECTION PAGE (Students, Attendance, Timetable)
+    // =========================================================================
+    function getSectionPageHtml(sectionId, activeTab = "students") {
+      const sec = appData.sections.find(s => s.id === sectionId);
+      if (!sec) {
+        return `<div class="card"><p>Section not found</p><button class="btn btn-outline" onclick="navigateTo('home')">Back to Home</button></div>`;
+      }
+
+      const totalStudents = appData.students.filter(st => st.sectionId === sec.id).length;
+
+      return `
+        <!-- Section Header -->
+        <div class="card" style="margin-bottom: 24px; border-left: 6px solid var(--color-primary-light);">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <h1 style="font-size: 1.85rem; font-weight: 800;">Class ${sec.classNumber} - ${escapeHtml(sec.name)}</h1>
+                <span style="background: var(--bg-card-subtle); color: var(--color-primary-light); font-weight: 700; font-size: 0.85rem; padding: 4px 12px; border-radius: 9999px; border: 1px solid var(--border-color);">
+                  ${totalStudents} Students
+                </span>
+              </div>
+              <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 4px;">
+                👨‍🏫 Section Incharge: <strong style="color: var(--text-main);">${escapeHtml(sec.incharge || "Not Assigned")}</strong>
+              </p>
+            </div>
+
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-outline btn-sm" onclick="navigateTo('class', { classNumber: ${sec.classNumber} })">
+                Back to Class ${sec.classNumber}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs-nav">
+          <button class="tab-btn ${activeTab === 'students' ? 'active' : ''}" onclick="switchSectionTab('${sec.id}', 'students')">
+            <span>👥</span> Students (${totalStudents})
+          </button>
+          <button class="tab-btn ${activeTab === 'attendance' ? 'active' : ''}" onclick="switchSectionTab('${sec.id}', 'attendance')">
+            <span>📋</span> Daily Attendance
+          </button>
+          <button class="tab-btn ${activeTab === 'timetable' ? 'active' : ''}" onclick="switchSectionTab('${sec.id}', 'timetable')">
+            <span>📅</span> Weekly Timetable
+          </button>
+        </div>
+
+        <!-- Tab Body Container -->
+        <div id="section-tab-content">
+          ${getSectionTabBodyHtml(sec, activeTab)}
+        </div>
+      `;
+    }
+
+    function switchSectionTab(sectionId, tab) {
+      currentRoute.params.tab = tab;
+      const content = document.getElementById("section-tab-content");
+      const sec = appData.sections.find(s => s.id === sectionId);
+      if (content && sec) {
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        content.innerHTML = getSectionTabBodyHtml(sec, tab);
+        initSectionPageScripts(sectionId, tab);
+      }
+      // Update breadcrumbs and permissions
+      renderBreadcrumbs();
+      applyRolePermissions();
+    }
+
+    function getSectionTabBodyHtml(sec, tab) {
+      if (tab === "students") {
+        return getStudentsTabHtml(sec);
+      } else if (tab === "attendance") {
+        return getAttendanceTabHtml(sec);
+      } else if (tab === "timetable") {
+        return getTimetableTabHtml(sec);
+      }
+      return "";
+    }
+
+    // --- 5.1 Students Tab ---
+    function getStudentsTabHtml(sec) {
+      const students = appData.students.filter(st => st.sectionId === sec.id);
+
+      return `
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px; margin-bottom: 16px;">
+          <div style="position: relative; max-width: 340px; width: 100%;">
+            <input type="text" id="student-search-input" class="form-control" placeholder="🔍 Search students by name or roll..." oninput="filterStudentsTable('${sec.id}')" />
+          </div>
+
+          <div class="admin-only">
+            <button class="btn btn-secondary" onclick="openAddStudentModal('${sec.id}')">
+              <span>➕</span> Add Student
+            </button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table id="students-table">
+            <thead>
+              <tr>
+                <th style="width: 100px;">Roll No</th>
+                <th>Student Name</th>
+                <th>Father Name</th>
+                <th class="admin-only" style="width: 150px; text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="students-table-body">
+              ${renderStudentsTableRows(sec.id, students)}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderStudentsTableRows(sectionId, studentsList) {
+      if (studentsList.length === 0) {
+        return `
+          <tr>
+            <td colspan="4" style="text-align: center; padding: 40px 16px; color: var(--text-muted);">
+              <span>🧑‍🎓</span>
+              <p style="margin-top: 8px; font-weight: 500;">No students found in this section.</p>
+            </td>
+          </tr>
+        `;
+      }
+
+      // Sort by roll number numerically if possible
+      const sorted = [...studentsList].sort((a, b) => {
+        const ra = parseInt(a.rollNo, 10);
+        const rb = parseInt(b.rollNo, 10);
+        if (!isNaN(ra) && !isNaN(rb)) return ra - rb;
+        return a.rollNo.localeCompare(b.rollNo);
+      });
+
+      return sorted.map(st => `
+        <tr id="row-student-${st.id}">
+          <td style="font-weight: 700; color: var(--color-primary-light);">#${escapeHtml(st.rollNo)}</td>
+          <td style="font-weight: 600;">${escapeHtml(st.name)}</td>
+          <td style="color: var(--text-muted);">${escapeHtml(st.fatherName)}</td>
+          <td class="admin-only" style="text-align: right;">
+            <button class="btn btn-outline btn-sm" style="padding: 4px 8px;" onclick="openEditStudentModal('${st.id}')" title="Edit student">✏️</button>
+            <button class="btn btn-danger btn-sm" style="padding: 4px 8px; margin-left: 4px;" onclick="confirmDeleteStudent('${st.id}')" title="Delete student">🗑️</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterStudentsTable(sectionId) {
+      const query = (document.getElementById("student-search-input")?.value || "").toLowerCase().trim();
+      const allStudents = appData.students.filter(st => st.sectionId === sectionId);
+      const filtered = allStudents.filter(st => 
+        st.name.toLowerCase().includes(query) || 
+        st.fatherName.toLowerCase().includes(query) ||
+        st.rollNo.toString().includes(query)
+      );
+
+      const tbody = document.getElementById("students-table-body");
+      if (tbody) tbody.innerHTML = renderStudentsTableRows(sectionId, filtered);
+      applyRolePermissions();
+    }
+
+    // Modal: Add Student
+    function openAddStudentModal(sectionId) {
+      const sec = appData.sections.find(s => s.id === sectionId);
+      if (!sec) return;
+
+      // Suggest next roll number
+      const existingRolls = appData.students.filter(s => s.sectionId === sectionId).map(s => parseInt(s.rollNo, 10)).filter(n => !isNaN(n));
+      const nextRoll = existingRolls.length > 0 ? Math.max(...existingRolls) + 1 : 1;
+
+      const modal = document.createElement("div");
+      modal.className = "modal-overlay open";
+      modal.id = "add-student-modal";
+      modal.innerHTML = `
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>➕ Add Student to ${escapeHtml(sec.name)}</h3>
+            <button class="btn btn-outline btn-sm" onclick="closeModal('add-student-modal')">✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label" for="std-roll">Roll Number *</label>
+              <input type="text" id="std-roll" class="form-control" value="${nextRoll}" placeholder="e.g. 1" autofocus />
+              <small style="color: var(--text-subtle);">Must be unique within this section.</small>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="std-name">Student Full Name *</label>
+              <input type="text" id="std-name" class="form-control" placeholder="e.g. Muhammad Hamza" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="std-father">Father's Name *</label>
+              <input type="text" id="std-father" class="form-control" placeholder="e.g. Tariq Mehmood" />
+            </div>
+            <div id="add-student-error" style="display: none; color: var(--color-danger); font-size: 0.85rem; font-weight: 600;"></div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('add-student-modal')">Cancel</button>
+            <button class="btn btn-secondary" onclick="submitAddStudent('${sec.id}')">Add Student</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    function submitAddStudent(sectionId) {
+      const rollInput = document.getElementById("std-roll");
+      const nameInput = document.getElementById("std-name");
+      const fatherInput = document.getElementById("std-father");
+      const errorDiv = document.getElementById("add-student-error");
+
+      const roll = rollInput?.value.trim();
+      const name = nameInput?.value.trim();
+      const father = fatherInput?.value.trim();
+
+      if (!roll || !name || !father) {
+        errorDiv.textContent = "Please fill in all fields (Roll No, Name, and Father's Name).";
+        errorDiv.style.display = "block";
+        return;
+      }
+
+      // Check unique roll number in section
+      const duplicateRoll = appData.students.some(s => s.sectionId === sectionId && s.rollNo.toLowerCase() === roll.toLowerCase());
+      if (duplicateRoll) {
+        errorDiv.textContent = `Roll Number #${roll} already exists in this section. Please assign another roll number.`;
+        errorDiv.style.display = "block";
+        return;
+      }
+
+      const newId = `std_${sectionId}_${Date.now()}`;
+      appData.students.push({
+        id: newId,
+        sectionId: sectionId,
+        rollNo: roll,
+        name: name,
+        fatherName: father
+      });
+
+      saveData();
+      closeModal("add-student-modal");
+      showToast(`Student "${name}" added successfully!`, "success");
+      renderApp();
+    }
+
+    // Modal: Edit Student
+    function openEditStudentModal(studentId) {
+      const student = appData.students.find(s => s.id === studentId);
+      if (!student) return;
+
+      const modal = document.createElement("div");
+      modal.className = "modal-overlay open";
+      modal.id = "edit-student-modal";
+      modal.innerHTML = `
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>✏️ Edit Student Information</h3>
+            <button class="btn btn-outline btn-sm" onclick="closeModal('edit-student-modal')">✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label" for="edit-std-roll">Roll Number *</label>
+              <input type="text" id="edit-std-roll" class="form-control" value="${escapeHtml(student.rollNo)}" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-std-name">Student Full Name *</label>
+              <input type="text" id="edit-std-name" class="form-control" value="${escapeHtml(student.name)}" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-std-father">Father's Name *</label>
+              <input type="text" id="edit-std-father" class="form-control" value="${escapeHtml(student.fatherName)}" />
+            </div>
+            <div id="edit-student-error" style="display: none; color: var(--color-danger); font-size: 0.85rem; font-weight: 600;"></div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('edit-student-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitEditStudent('${student.id}')">Save Changes</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    function submitEditStudent(studentId) {
+      const student = appData.students.find(s => s.id === studentId);
+      if (!student) return;
+
+      const rollInput = document.getElementById("edit-std-roll");
+      const nameInput = document.getElementById("edit-std-name");
+      const fatherInput = document.getElementById("edit-std-father");
+      const errorDiv = document.getElementById("edit-student-error");
+
+      const roll = rollInput?.value.trim();
+      const name = nameInput?.value.trim();
+      const father = fatherInput?.value.trim();
+
+      if (!roll || !name || !father) {
+        errorDiv.textContent = "All fields are required.";
+        errorDiv.style.display = "block";
+        return;
+      }
+
+      // Check unique roll number within section
+      const duplicateRoll = appData.students.some(s => s.id !== studentId && s.sectionId === student.sectionId && s.rollNo.toLowerCase() === roll.toLowerCase());
+      if (duplicateRoll) {
+        errorDiv.textContent = `Roll Number #${roll} is already in use by another student in this section.`;
+        errorDiv.style.display = "block";
+        return;
+      }
+
+      student.rollNo = roll;
+      student.name = name;
+      student.fatherName = father;
+
+      saveData();
+      closeModal("edit-student-modal");
+      showToast(`Student details updated!`, "success");
+      renderApp();
+    }
+
+    function confirmDeleteStudent(studentId) {
+      const student = appData.students.find(s => s.id === studentId);
+      if (!student) return;
+
+      openConfirmDialog({
+        title: `Delete Student?`,
+        message: `Are you sure you want to delete student "${student.name}" (Roll #${student.rollNo})?`,
+        confirmBtnText: "Delete Student",
+        danger: true,
+        onConfirm: () => {
+          appData.students = appData.students.filter(s => s.id !== studentId);
+          // Clean student attendance records
+          for (const key in appData.attendance) {
+            if (appData.attendance[key] && appData.attendance[key][studentId]) {
+              delete appData.attendance[key][studentId];
+            }
+          }
+          saveData();
+          showToast(`Student "${student.name}" removed`, "danger");
+          renderApp();
+        }
+      });
+    }
+
+    // --- 5.2 Attendance Tab ---
+    let activeAttendanceDate = new Date().toISOString().split("T")[0];
+    let workingAttendance = {}; // In-memory working copy before save
+
+    function getAttendanceTabHtml(sec) {
+      const students = appData.students.filter(st => st.sectionId === sec.id);
+      const attKey = `${sec.id}_${activeAttendanceDate}`;
+      const savedRecords = appData.attendance[attKey] || {};
+
+      // Initialize working attendance from saved records or default to present
+      workingAttendance = {};
+      students.forEach(st => {
+        workingAttendance[st.id] = savedRecords[st.id] || "present";
+      });
+
+      // Compute counters
+      let presentCount = 0;
+      let absentCount = 0;
+      students.forEach(st => {
+        if (workingAttendance[st.id] === "present") presentCount++;
+        else absentCount++;
+      });
+      const pct = students.length > 0 ? ((presentCount / students.length) * 100).toFixed(1) : 0;
+
+      return `
+        <!-- Top Attendance Control Bar -->
+        <div class="card" style="margin-bottom: 20px;">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;">
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+              <label for="att-date-picker" style="font-weight: 700; font-size: 0.95rem;">Select Attendance Date:</label>
+              <input type="date" id="att-date-picker" class="form-control" style="width: auto; min-width: 170px;" value="${activeAttendanceDate}" onchange="changeAttendanceDate('${sec.id}', this.value)" />
+              <button class="btn btn-outline btn-sm" onclick="setAttendanceToday('${sec.id}')">Today</button>
+            </div>
+
+            <!-- Live Attendance Counter -->
+            <div style="display: flex; align-items: center; gap: 16px; background: var(--bg-card-subtle); padding: 8px 16px; border-radius: var(--radius-md);">
+              <div>
+                <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Present</span>
+                <p id="att-counter-present" style="font-size: 1.25rem; font-weight: 800; color: var(--color-secondary-light);">${presentCount}</p>
+              </div>
+              <div style="width: 1px; height: 32px; background: var(--border-color);"></div>
+              <div>
+                <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Absent</span>
+                <p id="att-counter-absent" style="font-size: 1.25rem; font-weight: 800; color: var(--color-danger);">${absentCount}</p>
+              </div>
+              <div style="width: 1px; height: 32px; background: var(--border-color);"></div>
+              <div>
+                <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Attendance %</span>
+                <p id="att-counter-pct" style="font-size: 1.25rem; font-weight: 800; color: var(--color-primary-light);">${pct}%</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Bulk Actions & Save (Admin Only) -->
+          <div class="admin-only" style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-color); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px;">
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-outline btn-sm" onclick="bulkMarkAttendance('${sec.id}', 'present')">Mark All Present</button>
+              <button class="btn btn-outline btn-sm" onclick="bulkMarkAttendance('${sec.id}', 'absent')">Mark All Absent</button>
+            </div>
+            <button class="btn btn-secondary" onclick="saveSectionAttendance('${sec.id}')">
+              <span>💾</span> Save Attendance Record
+            </button>
+          </div>
+        </div>
+
+        <!-- Student Attendance List -->
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 90px;">Roll No</th>
+                <th>Student Name</th>
+                <th>Father Name</th>
+                <th style="width: 220px; text-align: center;">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${students.length === 0 
+                ? `<tr><td colspan="4" style="text-align: center; padding: 32px; color: var(--text-muted);">No students enrolled in this section.</td></tr>`
+                : students.map(st => {
+                    const status = workingAttendance[st.id] || "present";
+                    const isAdmin = currentUserRole === "admin";
+                    return `
+                      <tr>
+                        <td style="font-weight: 700; color: var(--color-primary-light);">#${escapeHtml(st.rollNo)}</td>
+                        <td style="font-weight: 600;">${escapeHtml(st.name)}</td>
+                        <td style="color: var(--text-muted);">${escapeHtml(st.fatherName)}</td>
+                        <td style="text-align: center;">
+                          <div class="att-toggle-group">
+                            <button 
+                              class="att-toggle-btn present ${status === 'present' ? 'active' : ''}" 
+                              ${!isAdmin ? 'disabled' : ''} 
+                              onclick="toggleStudentAttendance('${sec.id}', '${st.id}', 'present')">
+                              ✓ Present
+                            </button>
+                            <button 
+                              class="att-toggle-btn absent ${status === 'absent' ? 'active' : ''}" 
+                              ${!isAdmin ? 'disabled' : ''} 
+                              onclick="toggleStudentAttendance('${sec.id}', '${st.id}', 'absent')">
+                              ✗ Absent
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    `;
+                  }).join('')
+              }
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function changeAttendanceDate(sectionId, newDate) {
+      if (!newDate) return;
+      activeAttendanceDate = newDate;
+      const content = document.getElementById("section-tab-content");
+      const sec = appData.sections.find(s => s.id === sectionId);
+      if (content && sec) {
+        content.innerHTML = getSectionTabBodyHtml(sec, "attendance");
+        applyRolePermissions();
+      }
+    }
+
+    function setAttendanceToday(sectionId) {
+      activeAttendanceDate = new Date().toISOString().split("T")[0];
+      changeAttendanceDate(sectionId, activeAttendanceDate);
+    }
+
+    function toggleStudentAttendance(sectionId, studentId, targetStatus) {
+      if (currentUserRole !== "admin") return;
+      workingAttendance[studentId] = targetStatus;
+      updateAttendanceCounters(sectionId);
+
+      // Update row buttons dynamically without full reload
+      const row = event.target.closest("tr");
+      if (row) {
+        const pBtn = row.querySelector(".att-toggle-btn.present");
+        const aBtn = row.querySelector(".att-toggle-btn.absent");
+        if (targetStatus === "present") {
+          pBtn?.classList.add("active");
+          aBtn?.classList.remove("active");
+        } else {
+          aBtn?.classList.add("active");
+          pBtn?.classList.remove("active");
+        }
+      }
+    }
+
+    function bulkMarkAttendance(sectionId, status) {
+      if (currentUserRole !== "admin") return;
+      const students = appData.students.filter(st => st.sectionId === sectionId);
+      students.forEach(st => {
+        workingAttendance[st.id] = status;
+      });
+      // Re-render tab view to reflect all toggles
+      const sec = appData.sections.find(s => s.id === sectionId);
+      const content = document.getElementById("section-tab-content");
+      if (content && sec) {
+        content.innerHTML = getSectionTabBodyHtml(sec, "attendance");
+        applyRolePermissions();
+      }
+    }
+
+    function updateAttendanceCounters(sectionId) {
+      const students = appData.students.filter(st => st.sectionId === sectionId);
+      let presentCount = 0;
+      let absentCount = 0;
+      students.forEach(st => {
+        if (workingAttendance[st.id] === "present") presentCount++;
+        else absentCount++;
+      });
+      const pct = students.length > 0 ? ((presentCount / students.length) * 100).toFixed(1) : 0;
+
+      const pEl = document.getElementById("att-counter-present");
+      const aEl = document.getElementById("att-counter-absent");
+      const pctEl = document.getElementById("att-counter-pct");
+
+      if (pEl) pEl.textContent = presentCount;
+      if (aEl) aEl.textContent = absentCount;
+      if (pctEl) pctEl.textContent = `${pct}%`;
+    }
+
+    function saveSectionAttendance(sectionId) {
+      if (currentUserRole !== "admin") return;
+      const attKey = `${sectionId}_${activeAttendanceDate}`;
+      appData.attendance[attKey] = { ...workingAttendance };
+      saveData();
+      showToast(`Attendance saved for ${activeAttendanceDate}!`, "success");
+    }
+
+    // --- 5.3 Timetable Tab with Conflict Detection ---
+    function getTimetableTabHtml(sec) {
+      const isAdmin = currentUserRole === "admin";
+
+      let rowsHtml = "";
+      LECTURES.forEach(lec => {
+        const timeSlot = LECTURE_TIMES[lec - 1];
+        let cellsHtml = "";
+
+        DAYS_OF_WEEK.forEach(day => {
+          const key = `${sec.id}_${day}_${lec}`;
+          const entry = appData.timetable[key];
+
+          if (entry) {
+            const teacher = appData.teachers.find(t => t.id === entry.teacherId);
+            const teacherName = teacher ? teacher.name : (entry.teacherName || "Unassigned");
+            const subClass = getSubjectClass(entry.subject);
+
+            cellsHtml += `
+              <td style="padding: 6px;">
+                <div class="timetable-cell ${!isAdmin ? 'readonly' : ''}" 
+                  onclick="${isAdmin ? `openTimetableEditModal('${sec.id}', '${day}', ${lec})` : ''}" 
+                  title="${isAdmin ? 'Click to edit period' : ''}">
+                  <div>
+                    <span class="subject-pill ${subClass}">${escapeHtml(entry.subject)}</span>
+                    <p style="font-weight: 600; font-size: 0.85rem; margin-top: 2px;">${escapeHtml(teacherName)}</p>
+                  </div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; margin-top: 4px;">
+                    <span>📍</span> ${escapeHtml(entry.room || "Room")}
+                  </div>
+                </div>
+              </td>
+            `;
+          } else {
+            cellsHtml += `
+              <td style="padding: 6px;">
+                <div class="timetable-cell empty ${!isAdmin ? 'readonly' : ''}" 
+                  onclick="${isAdmin ? `openTimetableEditModal('${sec.id}', '${day}', ${lec})` : ''}" 
+                  title="${isAdmin ? 'Click to assign period' : ''}">
+                  <span style="font-size: 0.8rem; font-weight: 500;">${isAdmin ? '+ Add' : '—'}</span>
+                </div>
+              </td>
+            `;
+          }
+        });
+
+        rowsHtml += `
+          <tr>
+            <td style="background: var(--bg-card-subtle); font-weight: 700; white-space: nowrap; vertical-align: middle;">
+              <div>Lecture ${lec}</div>
+              <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: normal;">${timeSlot}</div>
+            </td>
+            ${cellsHtml}
+          </tr>
+        `;
+      });
+
+      return `
+        <div class="card" style="margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <h3 style="font-size: 1.15rem; font-weight: 700;">Weekly Academic Timetable (8 Periods / Day)</h3>
+              <p style="color: var(--text-muted); font-size: 0.85rem;">
+                ${isAdmin ? 'Click any cell to schedule a subject, assign teacher, and set room. System automatically alerts on teacher or room collisions.' : 'View weekly lecture routine and assigned faculty.'}
+              </p>
+            </div>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; font-size: 0.75rem;">
+              <span class="subject-pill sub-math">Math</span>
+              <span class="subject-pill sub-physics">Physics</span>
+              <span class="subject-pill sub-chemistry">Chemistry</span>
+              <span class="subject-pill sub-biology">Biology</span>
+              <span class="subject-pill sub-english">English</span>
+              <span class="subject-pill sub-computer">Computer</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 130px;">Time / Period</th>
+                ${DAYS_OF_WEEK.map(d => `<th style="min-width: 140px;">${d}</th>`).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function getSubjectClass(subject = "") {
+      const s = subject.toLowerCase();
+      if (s.includes("math")) return "sub-math";
+      if (s.includes("phys")) return "sub-physics";
+      if (s.includes("chem")) return "sub-chemistry";
+      if (s.includes("bio")) return "sub-biology";
+      if (s.includes("eng")) return "sub-english";
+      if (s.includes("comp")) return "sub-computer";
+      return "sub-other";
+    }
+
+    // Modal: Edit Timetable Cell
+    function openTimetableEditModal(sectionId, day, lecture) {
+      if (currentUserRole !== "admin") return;
+
+      const sec = appData.sections.find(s => s.id === sectionId);
+      const key = `${sectionId}_${day}_${lecture}`;
+      const existing = appData.timetable[key] || { subject: "", teacherId: "", room: "Room 101" };
+
+      const teachersOptions = appData.teachers.map(t => {
+        const isSelected = (existing.teacherId === t.id) ? "selected" : "";
+        return `<option value="${t.id}" ${isSelected}>${escapeHtml(t.name)} (${escapeHtml(t.subject)})</option>`;
+      }).join('');
+
+      const modal = document.createElement("div");
+      modal.className = "modal-overlay open";
+      modal.id = "edit-timetable-modal";
+      modal.innerHTML = `
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>📅 Schedule Period: Lecture ${lecture} (${day})</h3>
+            <button class="btn btn-outline btn-sm" onclick="closeModal('edit-timetable-modal')">✕</button>
+          </div>
+          <div class="modal-body">
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px;">
+              Section: <strong>Class ${sec.classNumber} - ${escapeHtml(sec.name)}</strong> (${LECTURE_TIMES[lecture - 1]})
+            </p>
+
+            <div class="form-group">
+              <label class="form-label" for="tt-subject">Subject *</label>
+              <input type="text" id="tt-subject" class="form-control" list="subjects-list" value="${escapeHtml(existing.subject)}" placeholder="e.g. Mathematics" />
+              <datalist id="subjects-list">
+                <option value="Mathematics" />
+                <option value="Physics" />
+                <option value="Chemistry" />
+                <option value="Biology" />
+                <option value="English" />
+                <option value="Computer Science" />
+                <option value="Islamiyat" />
+                <option value="Urdu" />
+                <option value="Library" />
+                <option value="Sports" />
+              </datalist>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="tt-teacher">Teacher *</label>
+              <select id="tt-teacher" class="form-control">
+                <option value="">-- Select Teacher --</option>
+                ${teachersOptions}
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="tt-room">Room / Location *</label>
+              <input type="text" id="tt-room" class="form-control" list="rooms-list" value="${escapeHtml(existing.room || 'Room 101')}" placeholder="e.g. Room 101 or Computer Lab" />
+              <datalist id="rooms-list">
+                <option value="Room 101" />
+                <option value="Room 102" />
+                <option value="Room 103" />
+                <option value="Room 104" />
+                <option value="Room 105" />
+                <option value="Science Lab" />
+                <option value="Chemistry Lab" />
+                <option value="Physics Lab" />
+                <option value="Biology Lab" />
+                <option value="Computer Lab" />
+                <option value="Library" />
+                <option value="Playground" />
+                <option value="Auditorium" />
+              </datalist>
+            </div>
+
+            <div id="tt-error" style="display: none; color: var(--color-danger); font-size: 0.85rem; font-weight: 600;"></div>
+          </div>
+          <div class="modal-footer" style="justify-content: space-between;">
+            <div>
+              ${existing.subject ? `<button class="btn btn-danger btn-sm" onclick="clearTimetableCell('${sectionId}', '${day}', ${lecture})">Clear Period</button>` : ''}
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-outline" onclick="closeModal('edit-timetable-modal')">Cancel</button>
+              <button class="btn btn-primary" onclick="submitTimetableEdit('${sectionId}', '${day}', ${lecture})">Save Period</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    function clearTimetableCell(sectionId, day, lecture) {
+      const key = `${sectionId}_${day}_${lecture}`;
+      delete appData.timetable[key];
+      saveData();
+      closeModal("edit-timetable-modal");
+      showToast("Lecture period cleared", "info");
+      renderApp();
+    }
+
+    // =========================================================================
+    // CONFLICT DETECTION & WARNING LOGIC
+    // =========================================================================
+    function submitTimetableEdit(sectionId, day, lecture) {
+      const subjectInput = document.getElementById("tt-subject");
+      const teacherSelect = document.getElementById("tt-teacher");
+      const roomInput = document.getElementById("tt-room");
+      const errorDiv = document.getElementById("tt-error");
+
+      const subject = subjectInput?.value.trim();
+      const teacherId = teacherSelect?.value;
+      const room = roomInput?.value.trim() || "Room 101";
+
+      if (!subject || !teacherId) {
+        if (errorDiv) {
+          errorDiv.textContent = "Please provide both Subject and Teacher.";
+          errorDiv.style.display = "block";
+        }
+        return;
+      }
+
+      // Check conflicts across all OTHER sections for the exact same day & lecture!
+      const conflicts = [];
+      const selectedTeacher = appData.teachers.find(t => t.id === teacherId);
+      const teacherName = selectedTeacher ? selectedTeacher.name : "Selected Teacher";
+
+      for (const [key, entry] of Object.entries(appData.timetable)) {
+        const parsed = parseTimetableKey(key);
+        if (!parsed) continue;
+        const otherSecId = parsed.sectionId;
+        const otherDay = parsed.day;
+        const otherLec = parsed.lecture;
+
+        if (otherDay === day && otherLec === lecture && otherSecId !== sectionId) {
+          const otherSec = appData.sections.find(s => s.id === otherSecId);
+          const otherSecLabel = otherSec ? `Class ${otherSec.classNumber} - ${otherSec.name}` : otherSecId;
+
+          // Conflict 1: Teacher collision
+          if (entry.teacherId === teacherId) {
+            conflicts.push(`Teacher Warning: "${teacherName}" is already busy teaching ${entry.subject} in ${otherSecLabel} during Lecture ${lecture} on ${day}.`);
+          }
+
+          // Conflict 2: Room collision
+          if (entry.room && entry.room.toLowerCase() === room.toLowerCase()) {
+            conflicts.push(`Room Warning: "${room}" is already occupied by ${otherSecLabel} for ${entry.subject} during Lecture ${lecture} on ${day}.`);
+          }
+        }
+      }
+
+      if (conflicts.length > 0) {
+        // Show Conflict Confirmation Dialog (Do not save until admin confirms)
+        closeModal("edit-timetable-modal");
+        openConflictWarningModal(conflicts, () => {
+          // Admin confirmed override
+          applyTimetableSave(sectionId, day, lecture, subject, teacherId, room);
+        });
+      } else {
+        // No conflict, save immediately
+        closeModal("edit-timetable-modal");
+        applyTimetableSave(sectionId, day, lecture, subject, teacherId, room);
+      }
+    }
+
+    function applyTimetableSave(sectionId, day, lecture, subject, teacherId, room) {
+      const key = `${sectionId}_${day}_${lecture}`;
+      appData.timetable[key] = {
+        subject: subject,
+        teacherId: teacherId,
+        room: room
+      };
+      saveData();
+      showToast(`Period scheduled for ${day} Lecture ${lecture}!`, "success");
+      renderApp();
+    }
+
+    function openConflictWarningModal(conflictsList, onConfirm) {
+      const modal = document.createElement("div");
+      modal.className = "modal-overlay open";
+      modal.id = "conflict-warning-modal";
+      modal.innerHTML = `
+        <div class="modal-content" style="max-width: 500px; border-left: 6px solid var(--color-danger);">
+          <div class="modal-header">
+            <h3 style="color: var(--color-danger); display: flex; align-items: center; gap: 8px;">
+              ⚠️ Timetable Conflict Detected!
+            </h3>
+            <button class="btn btn-outline btn-sm" onclick="closeModal('conflict-warning-modal')">✕</button>
+          </div>
+          <div class="modal-body">
+            <p style="font-size: 0.95rem; margin-bottom: 14px; font-weight: 600;">
+              The following scheduling conflict(s) were found:
+            </p>
+            <div style="background: var(--color-danger-bg); border: 1px solid var(--color-danger); padding: 12px 16px; border-radius: var(--radius-md); margin-bottom: 16px;">
+              ${conflictsList.map(c => `
+                <div style="margin-bottom: 8px; font-size: 0.88rem; color: var(--text-main); display: flex; gap: 8px;">
+                  <span>⚠️</span>
+                  <span>${escapeHtml(c)}</span>
+                </div>
+              `).join('')}
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+              Do you want to ignore this warning and override the schedule anyway, or cancel and choose another teacher/room?
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('conflict-warning-modal')">Cancel & Keep Old</button>
+            <button class="btn btn-danger" id="conflict-confirm-btn">Confirm & Override Anyway</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      document.getElementById("conflict-confirm-btn")?.addEventListener("click", () => {
+        closeModal("conflict-warning-modal");
+        onConfirm();
+      });
+    }
+
+    function initSectionPageScripts(sectionId, tab) {
+      // Any specific event listeners or autofocus hooks
+    }
+
+    // =========================================================================
+    // 6. ATTENDANCE DASHBOARD PAGE
+    // =========================================================================
+    let dashboardDate = new Date().toISOString().split("T")[0];
+    let classBarChart = null;
+    let trendLineChart = null;
+
+    function getAttendanceDashboardHtml() {
+      // Calculate overall statistics for the chosen dashboard date
+      let schoolTotalStudents = appData.students.length;
+      let schoolTotalPresent = 0;
+      let schoolTotalAbsent = 0;
+
+      // Group by class
+      const classSummaries = [];
+      let highestClass = null;
+      let lowestClass = null;
+      let highestPct = -1;
+      let lowestPct = 101;
+
+      appData.classes.forEach(cls => {
+        const sections = appData.sections.filter(s => s.classNumber === cls);
+        let clsStudentsCount = 0;
+        let clsPresentCount = 0;
+        let clsAbsentCount = 0;
+
+        const sectionsData = sections.map(sec => {
+          const secStudents = appData.students.filter(st => st.sectionId === sec.id);
+          const attKey = `${sec.id}_${dashboardDate}`;
+          const records = appData.attendance[attKey] || {};
+
+          let sPresent = 0;
+          let sAbsent = 0;
+          secStudents.forEach(st => {
+            if (records[st.id] === "present" || (!records[st.id])) {
+              sPresent++;
+            } else {
+              sAbsent++;
+            }
+          });
+
+          clsStudentsCount += secStudents.length;
+          clsPresentCount += sPresent;
+          clsAbsentCount += sAbsent;
+
+          const sPct = secStudents.length > 0 ? ((sPresent / secStudents.length) * 100).toFixed(1) : 0;
+          return { sec, total: secStudents.length, present: sPresent, absent: sAbsent, pct: sPct };
+        });
+
+        const clsPct = clsStudentsCount > 0 ? ((clsPresentCount / clsStudentsCount) * 100).toFixed(1) : 0;
+        const clsPctNum = parseFloat(clsPct);
+
+        if (clsPctNum > highestPct) {
+          highestPct = clsPctNum;
+          highestClass = { classNumber: cls, pct: clsPct };
+        }
+        if (clsPctNum < lowestPct) {
+          lowestPct = clsPctNum;
+          lowestClass = { classNumber: cls, pct: clsPct };
+        }
+
+        schoolTotalPresent += clsPresentCount;
+        schoolTotalAbsent += clsAbsentCount;
+
+        classSummaries.push({
+          classNumber: cls,
+          total: clsStudentsCount,
+          present: clsPresentCount,
+          absent: clsAbsentCount,
+          pct: clsPct,
+          sections: sectionsData
+        });
+      });
+
+      const schoolPct = schoolTotalStudents > 0 ? ((schoolTotalPresent / schoolTotalStudents) * 100).toFixed(1) : 0;
+
+      // Build Table HTML with Section details + Class Summary Row after each class
+      let tableRowsHtml = "";
+      classSummaries.forEach(clsSummary => {
+        // Sections of this class
+        clsSummary.sections.forEach(sData => {
+          tableRowsHtml += `
+            <tr>
+              <td style="padding-left: 28px; font-weight: 500;">
+                <span style="color: var(--text-muted); margin-right: 6px;">↳</span>
+                ${escapeHtml(sData.sec.name)}
+              </td>
+              <td>${escapeHtml(sData.sec.incharge || "—")}</td>
+              <td style="font-weight: 600;">${sData.total}</td>
+              <td style="color: var(--color-secondary-light); font-weight: 700;">${sData.present}</td>
+              <td style="color: var(--color-danger); font-weight: 700;">${sData.absent}</td>
+              <td>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-weight: 700; min-width: 45px;">${sData.pct}%</span>
+                  <div style="flex: 1; height: 6px; background: var(--bg-card-subtle); border-radius: 9999px; overflow: hidden; max-width: 100px;">
+                    <div style="width: ${sData.pct}%; height: 100%; background: var(--color-primary-light);"></div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          `;
+        });
+
+        // Class Total Summary Row
+        const isHighest = highestClass && highestClass.classNumber === clsSummary.classNumber;
+        const isLowest = lowestClass && lowestClass.classNumber === clsSummary.classNumber;
+
+        let badgeHtml = "";
+        if (isHighest) badgeHtml = `<span style="background: rgba(16, 185, 129, 0.2); color: var(--color-secondary-light); font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 9999px; margin-left: 8px;">★ HIGHEST ATTENDANCE</span>`;
+        if (isLowest) badgeHtml = `<span style="background: rgba(239, 68, 68, 0.2); color: var(--color-danger); font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 9999px; margin-left: 8px;">▼ LOWEST ATTENDANCE</span>`;
+
+        tableRowsHtml += `
+          <tr style="background: var(--bg-card-subtle); font-weight: 700; border-top: 2px solid var(--border-color); border-bottom: 2px solid var(--border-color);">
+            <td colspan="2">
+              <strong>Class ${clsSummary.classNumber} Summary</strong>
+              ${badgeHtml}
+            </td>
+            <td>${clsSummary.total}</td>
+            <td style="color: var(--color-secondary-light);">${clsSummary.present}</td>
+            <td style="color: var(--color-danger);">${clsSummary.absent}</td>
+            <td style="color: var(--color-primary-light); font-size: 1rem;">
+              ${clsSummary.pct}%
+            </td>
+          </tr>
+        `;
+      });
+
+      return `
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 24px;">
+          <div>
+            <h1 style="font-size: 2rem; font-weight: 800;">📊 Daily Attendance Dashboard</h1>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">
+              School-wide attendance analytics, class-wise distribution, and 7-day trend report.
+            </p>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label for="dashboard-date-input" style="font-weight: 700; font-size: 0.9rem;">Date:</label>
+            <input type="date" id="dashboard-date-input" class="form-control" style="width: auto;" value="${dashboardDate}" onchange="changeDashboardDate(this.value)" />
+          </div>
+        </div>
+
+        <!-- Overall School Metric Banner -->
+        <div class="card" style="margin-bottom: 28px; background: linear-gradient(135deg, rgba(30, 58, 138, 0.05), rgba(5, 150, 105, 0.05)); border: 1px solid var(--border-color);">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; align-items: center;">
+            <div>
+              <span style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Overall School Attendance</span>
+              <h2 style="font-size: 2.25rem; font-weight: 800; color: var(--color-primary-light); margin: 4px 0;">
+                ${schoolPct}%
+              </h2>
+              <p style="font-size: 0.9rem; color: var(--text-muted);">
+                <strong>${schoolTotalPresent}</strong> present out of <strong>${schoolTotalStudents}</strong> enrolled students
+              </p>
+            </div>
+
+            <div style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-md); border-left: 5px solid var(--color-secondary-light);">
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-secondary-light); text-transform: uppercase;">Highest Attendance Class</span>
+              <p style="font-size: 1.25rem; font-weight: 800; margin-top: 2px;">Class ${highestClass ? highestClass.classNumber : '—'}</p>
+              <span style="font-size: 0.85rem; color: var(--text-muted);">${highestClass ? highestClass.pct : 0}% Present</span>
+            </div>
+
+            <div style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-md); border-left: 5px solid var(--color-danger);">
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-danger); text-transform: uppercase;">Lowest Attendance Class</span>
+              <p style="font-size: 1.25rem; font-weight: 800; margin-top: 2px;">Class ${lowestClass ? lowestClass.classNumber : '—'}</p>
+              <span style="font-size: 0.85rem; color: var(--text-muted);">${lowestClass ? lowestClass.pct : 0}% Present</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px; margin-bottom: 32px;">
+          <div class="card">
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 6px;">Class Comparison (% Attendance)</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px;">Comparison of all classes for ${dashboardDate}</p>
+            <div style="height: 260px; position: relative;">
+              <canvas id="class-bar-chart"></canvas>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 6px;">School 7-Day Attendance Trend</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px;">Daily overall attendance percentage across past week</p>
+            <div style="height: 260px; position: relative;">
+              <canvas id="trend-line-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed Class & Section Attendance Table -->
+        <div class="card">
+          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 16px;">Detailed Section & Class Attendance Breakdown</h3>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Class / Section</th>
+                  <th>Incharge</th>
+                  <th>Total Enrolled</th>
+                  <th>Present</th>
+                  <th>Absent</th>
+                  <th>Attendance %</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${tableRowsHtml}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function changeDashboardDate(newDate) {
+      if (!newDate) return;
+      dashboardDate = newDate;
+      renderApp();
+    }
+
+    function initAttendanceDashboardCharts() {
+      if (typeof Chart === "undefined") {
+        console.warn("Chart.js is not loaded yet");
+        return;
+      }
+
+      // Cleanup prior chart instances
+      if (classBarChart) classBarChart.destroy();
+      if (trendLineChart) trendLineChart.destroy();
+
+      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+      const textColor = isDark ? "#cbd5e1" : "#475569";
+      const gridColor = isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)";
+
+      // 1. Bar Chart Data (Class Comparison)
+      const classLabels = appData.classes.map(c => `Class ${c}`);
+      const classPctValues = [];
+      const barColors = [];
+
+      // Find highest and lowest for highlighting
+      let minVal = 101, maxVal = -1;
+      appData.classes.forEach(cls => {
+        const sections = appData.sections.filter(s => s.classNumber === cls);
+        let tot = 0, pres = 0;
+        sections.forEach(sec => {
+          const secSt = appData.students.filter(st => st.sectionId === sec.id);
+          const attKey = `${sec.id}_${dashboardDate}`;
+          const rec = appData.attendance[attKey] || {};
+          tot += secSt.length;
+          secSt.forEach(st => {
+            if (rec[st.id] === "present" || !rec[st.id]) pres++;
+          });
+        });
+        const pct = tot > 0 ? (pres / tot) * 100 : 0;
+        classPctValues.push(parseFloat(pct.toFixed(1)));
+        if (pct < minVal) minVal = pct;
+        if (pct > maxVal) maxVal = pct;
+      });
+
+      classPctValues.forEach(val => {
+        if (val === maxVal && maxVal > minVal) {
+          barColors.push("#10b981"); // Highlight highest in green
+        } else if (val === minVal && maxVal > minVal) {
+          barColors.push("#ef4444"); // Highlight lowest in red
+        } else {
+          barColors.push("#3b82f6"); // Default blue
+        }
+      });
+
+      const barCtx = document.getElementById("class-bar-chart")?.getContext("2d");
+      if (barCtx) {
+        classBarChart = new Chart(barCtx, {
+          type: "bar",
+          data: {
+            labels: classLabels,
+            datasets: [{
+              label: "Attendance %",
+              data: classPctValues,
+              backgroundColor: barColors,
+              borderRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 100,
+                ticks: { color: textColor, callback: v => v + "%" },
+                grid: { color: gridColor }
+              },
+              x: {
+                ticks: { color: textColor },
+                grid: { display: false }
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: ctx => `Attendance: ${ctx.raw}%`
+                }
+              }
+            }
+          }
+        });
+      }
+
+      // 2. Line Chart Data (Last 7 Days Trend)
+      const trendLabels = [];
+      const trendValues = [];
+      const baseDate = new Date(dashboardDate);
+
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(baseDate);
+        d.setDate(baseDate.getDate() - i);
+        const dStr = d.toISOString().split("T")[0];
+        const dayLabel = d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+        trendLabels.push(dayLabel);
+
+        // Compute school % for this date
+        let tot = 0, pres = 0;
+        appData.sections.forEach(sec => {
+          const secSt = appData.students.filter(st => st.sectionId === sec.id);
+          const attKey = `${sec.id}_${dStr}`;
+          const rec = appData.attendance[attKey] || {};
+          tot += secSt.length;
+          secSt.forEach(st => {
+            if (rec[st.id] === "present" || !rec[st.id]) pres++;
+          });
+        });
+        const p = tot > 0 ? (pres / tot) * 100 : 0;
+        trendValues.push(parseFloat(p.toFixed(1)));
+      }
+
+      const lineCtx = document.getElementById("trend-line-chart")?.getContext("2d");
+      if (lineCtx) {
+        trendLineChart = new Chart(lineCtx, {
+          type: "line",
+          data: {
+            labels: trendLabels,
+            datasets: [{
+              label: "Overall Attendance %",
+              data: trendValues,
+              borderColor: "#10b981",
+              backgroundColor: "rgba(16, 185, 129, 0.12)",
+              tension: 0.35,
+              fill: true,
+              pointRadius: 5,
+              pointBackgroundColor: "#10b981"
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                min: 70,
+                max: 100,
+                ticks: { color: textColor, callback: v => v + "%" },
+                grid: { color: gridColor }
+              },
+              x: {
+                ticks: { color: textColor },
+                grid: { color: gridColor }
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: ctx => `Attendance: ${ctx.raw}%`
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    // =========================================================================
+    // 7. TEACHERS PAGE
+    // =========================================================================
+    function getTeachersPageHtml() {
+      const teachers = appData.teachers;
+
+      const teacherCardsHtml = teachers.map(t => {
+        // Compute lectures per week from timetable
+        let lecturesCount = 0;
+        for (const key in appData.timetable) {
+          if (appData.timetable[key]?.teacherId === t.id) {
+            lecturesCount++;
+          }
+        }
+
+        // Check if teacher is an incharge in any section
+        const inchargeSections = appData.sections.filter(s => s.incharge && s.incharge.toLowerCase() === t.name.toLowerCase());
+        const inchargeBadges = inchargeSections.map(s => `
+          <span style="background: rgba(245, 158, 11, 0.15); color: var(--color-accent); font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 9999px; display: inline-flex; align-items: center; gap: 4px;">
+            ⭐ Incharge: Class ${s.classNumber} - ${escapeHtml(s.name)}
+          </span>
+        `).join(' ');
+
+        return `
+          <div class="card card-hover" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 48px; height: 48px; border-radius: var(--radius-md); background: linear-gradient(135deg, var(--color-primary-light), var(--color-secondary-light)); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                    👨‍🏫
+                  </div>
+                  <div>
+                    <h3 style="font-size: 1.2rem; font-weight: 700;">${escapeHtml(t.name)}</h3>
+                    <p style="color: var(--color-primary-light); font-weight: 600; font-size: 0.85rem;">${escapeHtml(t.subject)}</p>
+                  </div>
+                </div>
+              </div>
+
+              ${inchargeBadges ? `<div style="margin-bottom: 12px;">${inchargeBadges}</div>` : ''}
+
+              <div style="background: var(--bg-card-subtle); padding: 12px; border-radius: var(--radius-md); margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">Teaching Load</span>
+                <span style="font-weight: 800; font-size: 1.1rem; color: var(--color-secondary-light);">${lecturesCount} Lectures / Week</span>
+              </div>
+            </div>
+
+            <div>
+              <button class="btn btn-outline" style="width: 100%; margin-bottom: 8px;" onclick="openTeacherScheduleModal('${t.id}')">
+                📅 View Personal Weekly Schedule
+              </button>
+
+              <div class="admin-only" style="display: flex; gap: 8px;">
+                <button class="btn btn-outline btn-sm" style="flex: 1;" onclick="openEditTeacherModal('${t.id}')">
+                  ✏️ Edit
+                </button>
+                <button class="btn btn-danger btn-sm" style="flex: 1;" onclick="confirmDeleteTeacher('${t.id}')">
+                  🗑️ Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      return `
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 24px;">
+          <div>
+            <h1 style="font-size: 2rem; font-weight: 800;">👨‍🏫 Faculty & Teaching Staff</h1>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">
+              Directory of teachers, subjects, automated workload distribution, and personal timetables.
+            </p>
+          </div>
+
+          <div class="admin-only">
+            <button class="btn btn-secondary" onclick="openAddTeacherModal()">
+              <span>➕</span> Add Teacher
+            </button>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+          ${teacherCardsHtml}
+        </div>
+      `;
+    }
+
+    // Modal: Personal Weekly Schedule of a Teacher (Generated automatically)
+    function openTeacherScheduleModal(teacherId) {
+      const teacher = appData.teachers.find(t => t.id === teacherId);
+      if (!teacher) return;
+
+      let totalTeacherLecs = 0;
+      let rowsHtml = "";
+
+      LECTURES.forEach(lec => {
+        const timeSlot = LECTURE_TIMES[lec - 1];
+        let cellsHtml = "";
+
+        DAYS_OF_WEEK.forEach(day => {
+          // Look across all section timetables where teacherId matches
+          let matched = null;
+          for (const [key, entry] of Object.entries(appData.timetable)) {
+            const parsed = parseTimetableKey(key);
+            if (!parsed) continue;
+
+            if (parsed.day === day && parsed.lecture === lec && entry.teacherId === teacher.id) {
+              const sec = appData.sections.find(s => s.id === parsed.sectionId);
+              matched = {
+                sectionName: sec ? `Class ${sec.classNumber} - ${sec.name}` : parsed.sectionId,
+                subject: entry.subject,
+                room: entry.room || "Room"
+              };
+              break;
+            }
+          }
+
+          if (matched) {
+            totalTeacherLecs++;
+            const subClass = getSubjectClass(matched.subject);
+            cellsHtml += `
+              <td style="padding: 6px;">
+                <div class="timetable-cell" style="cursor: default; min-height: 80px;">
+                  <span class="subject-pill ${subClass}">${escapeHtml(matched.subject)}</span>
+                  <p style="font-weight: 700; font-size: 0.85rem; color: var(--color-primary-light);">${escapeHtml(matched.sectionName)}</p>
+                  <span style="font-size: 0.72rem; color: var(--text-muted);">📍 ${escapeHtml(matched.room)}</span>
+                </div>
+              </td>
+            `;
+          } else {
+            cellsHtml += `
+              <td style="padding: 6px;">
+                <div class="timetable-cell empty" style="cursor: default; min-height: 80px;">
+                  <span style="font-size: 0.75rem; color: var(--text-subtle);">Free</span>
+                </div>
+              </td>
+            `;
+          }
+        });
+
+        rowsHtml += `
+          <tr>
+            <td style="background: var(--bg-card-subtle); font-weight: 700; white-space: nowrap;">
+              <div>Lecture ${lec}</div>
+              <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: normal;">${timeSlot}</div>
+            </td>
+            ${cellsHtml}
+          </tr>
+        `;
+      });
+
+      const modal = document.createElement("div");
+      modal.className = "modal-overlay open";
+      modal.id = "teacher-schedule-modal";
+      modal.innerHTML = `
+        <div class="modal-content" style="max-width: 960px;">
+          <div class="modal-header">
+            <div>
+              <h3>📅 Personal Weekly Schedule: ${escapeHtml(teacher.name)}</h3>
+              <p style="font-size: 0.85rem; color: var(--text-muted);">${escapeHtml(teacher.subject)} Department — Total ${totalTeacherLecs} Assigned Lectures / Week</p>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="closeModal('teacher-schedule-modal')">✕</button>
+          </div>
+          <div class="modal-body" style="padding: 16px;">
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width: 120px;">Period</th>
+                    ${DAYS_OF_WEEK.map(d => `<th style="min-width: 120px;">${d}</th>`).join('')}
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rowsHtml}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" onclick="closeModal('teacher-schedule-modal')">Close Schedule</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    // Modal: Add Teacher
+    function openAddTeacherModal() {
+      const modal = document.createElement("div");
+      modal.className = "modal-overlay open";
+      modal.id = "add-teacher-modal";
+      modal.innerHTML = `
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>➕ Add Faculty Member</h3>
+            <button class="btn btn-outline btn-sm" onclick="closeModal('add-teacher-modal')">✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label" for="new-teach-name">Teacher Full Name *</label>
+              <input type="text" id="new-teach-name" class="form-control" placeholder="e.g. Mr. Tariq Mehmood" autofocus />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="new-teach-subject">Subject Specialization *</label>
+              <input type="text" id="new-teach-subject" class="form-control" placeholder="e.g. Physics" />
+            </div>
+            <div id="add-teach-error" style="display: none; color: var(--color-danger); font-size: 0.85rem; font-weight: 600;"></div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('add-teacher-modal')">Cancel</button>
+            <button class="btn btn-secondary" onclick="submitAddTeacher()">Add Teacher</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    function submitAddTeacher() {
+      const nameInput = document.getElementById("new-teach-name");
+      const subInput = document.getElementById("new-teach-subject");
+      const errorDiv = document.getElementById("add-teach-error");
+
+      const name = nameInput?.value.trim();
+      const subject = subInput?.value.trim();
+
+      if (!name || !subject) {
+        if (errorDiv) {
+          errorDiv.textContent = "Please fill in both Teacher Name and Subject.";
+          errorDiv.style.display = "block";
+        }
+        return;
+      }
+
+      const newId = `t_${Date.now()}`;
+      appData.teachers.push({
+        id: newId,
+        name: name,
+        subject: subject
+      });
+
+      saveData();
+      closeModal("add-teacher-modal");
+      showToast(`Teacher "${name}" added successfully!`, "success");
+      renderApp();
+    }
+
+    // Modal: Edit Teacher
+    function openEditTeacherModal(teacherId) {
+      const teacher = appData.teachers.find(t => t.id === teacherId);
+      if (!teacher) return;
+
+      const modal = document.createElement("div");
+      modal.className = "modal-overlay open";
+      modal.id = "edit-teacher-modal";
+      modal.innerHTML = `
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>✏️ Edit Teacher</h3>
+            <button class="btn btn-outline btn-sm" onclick="closeModal('edit-teacher-modal')">✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label" for="edit-teach-name">Teacher Full Name *</label>
+              <input type="text" id="edit-teach-name" class="form-control" value="${escapeHtml(teacher.name)}" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-teach-subject">Subject Specialization *</label>
+              <input type="text" id="edit-teach-subject" class="form-control" value="${escapeHtml(teacher.subject)}" />
+            </div>
+            <div id="edit-teach-error" style="display: none; color: var(--color-danger); font-size: 0.85rem; font-weight: 600;"></div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('edit-teacher-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitEditTeacher('${teacher.id}')">Save Changes</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    function submitEditTeacher(teacherId) {
+      const teacher = appData.teachers.find(t => t.id === teacherId);
+      if (!teacher) return;
+
+      const nameInput = document.getElementById("edit-teach-name");
+      const subInput = document.getElementById("edit-teach-subject");
+      const errorDiv = document.getElementById("edit-teach-error");
+
+      const name = nameInput?.value.trim();
+      const subject = subInput?.value.trim();
+
+      if (!name || !subject) {
+        if (errorDiv) {
+          errorDiv.textContent = "Please fill in all fields.";
+          errorDiv.style.display = "block";
+        }
+        return;
+      }
+
+      teacher.name = name;
+      teacher.subject = subject;
+
+      saveData();
+      closeModal("edit-teacher-modal");
+      showToast(`Teacher information updated!`, "success");
+      renderApp();
+    }
+
+    function confirmDeleteTeacher(teacherId) {
+      const teacher = appData.teachers.find(t => t.id === teacherId);
+      if (!teacher) return;
+
+      openConfirmDialog({
+        title: `Delete Teacher?`,
+        message: `Are you sure you want to delete "${teacher.name}"? Their assignments in section timetables will be unlinked.`,
+        confirmBtnText: "Delete Teacher",
+        danger: true,
+        onConfirm: () => {
+          appData.teachers = appData.teachers.filter(t => t.id !== teacherId);
+          // Unlink teacher from timetables
+          for (const key in appData.timetable) {
+            if (appData.timetable[key]?.teacherId === teacherId) {
+              delete appData.timetable[key];
+            }
+          }
+          saveData();
+          showToast(`Teacher "${teacher.name}" removed`, "danger");
+          renderApp();
+        }
+      });
+    }
+
+    // =========================================================================
+    // EXPORT & IMPORT DATA (JSON BACKUP)
+    // =========================================================================
+    function exportData() {
+      try {
+        const dataStr = JSON.stringify(appData, null, 2);
+        const blob = new Blob([dataStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        const dateStr = new Date().toISOString().split("T")[0];
+        a.href = url;
+        a.download = `center-of-excellence-backup-${dateStr}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast("Backup downloaded successfully!", "success");
+      } catch (err) {
+        console.error("Export failed", err);
+        showToast("Failed to export data", "danger");
+      }
+    }
+
+    function openImportModal() {
+      if (currentUserRole !== "admin") return;
+
+      const modal = document.createElement("div");
+      modal.className = "modal-overlay open";
+      modal.id = "import-data-modal";
+      modal.innerHTML = `
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>📥 Import School Data (JSON Backup)</h3>
+            <button class="btn btn-outline btn-sm" onclick="closeModal('import-data-modal')">✕</button>
+          </div>
+          <div class="modal-body">
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px;">
+              Select a valid JSON backup file or paste raw backup JSON below. This will replace existing data in browser storage.
+            </p>
+            <div class="form-group">
+              <label class="form-label">Upload JSON File</label>
+              <input type="file" id="import-file-input" class="form-control" accept=".json" onchange="handleImportFileSelect(event)" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="import-json-paste">Or Paste Backup JSON</label>
+              <textarea id="import-json-paste" class="form-control" rows="6" placeholder="Paste JSON backup here..."></textarea>
+            </div>
+            <div id="import-error-msg" style="display: none; color: var(--color-danger); font-size: 0.85rem; font-weight: 600;"></div>
+          </div>
+          <div class="modal-footer" style="justify-content: space-between;">
+            <button class="btn btn-outline btn-sm" onclick="confirmResetToDefaultData()">Reset to Sample Data</button>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-outline" onclick="closeModal('import-data-modal')">Cancel</button>
+              <button class="btn btn-primary" onclick="submitImportData()">Import & Restore</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    function handleImportFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const textarea = document.getElementById("import-json-paste");
+        if (textarea) textarea.value = e.target.result;
+      };
+      reader.readAsText(file);
+    }
+
+    function submitImportData() {
+      const textarea = document.getElementById("import-json-paste");
+      const errorDiv = document.getElementById("import-error-msg");
+      if (!textarea || !textarea.value.trim()) {
+        if (errorDiv) {
+          errorDiv.textContent = "Please select a JSON file or paste valid JSON data.";
+          errorDiv.style.display = "block";
+        }
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(textarea.value.trim());
+        // Validate required structure
+        if (!Array.isArray(parsed.classes) || !Array.isArray(parsed.sections) || !Array.isArray(parsed.students) || !Array.isArray(parsed.teachers)) {
+          throw new Error("Invalid structure: missing classes, sections, students, or teachers arrays.");
+        }
+
+        appData = parsed;
+        saveData();
+        closeModal("import-data-modal");
+        showToast("School data successfully imported and restored!", "success");
+        renderApp();
+      } catch (err) {
+        if (errorDiv) {
+          errorDiv.textContent = `Import failed: ${err.message}`;
+          errorDiv.style.display = "block";
+        }
+      }
+    }
+
+    function confirmResetToDefaultData() {
+      openConfirmDialog({
+        title: "Reset to Sample Data?",
+        message: "Are you sure you want to reset all records back to the initial sample data? Any recent changes will be overwritten.",
+        confirmBtnText: "Reset to Default",
+        danger: true,
+        onConfirm: () => {
+          appData = JSON.parse(JSON.stringify(INITIAL_SCHOOL_DATA));
+          seedSampleAttendance(appData);
+          saveData();
+          closeModal("import-data-modal");
+          showToast("Data reset to initial sample state", "info");
+          renderApp();
+        }
+      });
+    }
+
+    // =========================================================================
+    // GENERAL UI UTILITIES (Theme, Toast, Confirm Dialog, Escape)
+    // =========================================================================
+    function toggleTheme() {
+      currentTheme = currentTheme === "light" ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", currentTheme);
+      localStorage.setItem(THEME_KEY, currentTheme);
+      updateThemeIcon();
+
+      // Refresh charts if on attendance dashboard
+      if (currentRoute.page === "attendance-dashboard") {
+        initAttendanceDashboardCharts();
+      }
+    }
+
+    function updateThemeIcon() {
+      const icon = document.getElementById("theme-icon");
+      if (icon) {
+        icon.textContent = currentTheme === "dark" ? "☀️" : "🌙";
+      }
+    }
+
+    function showToast(message, type = "info") {
+      const container = document.getElementById("toast-container");
+      if (!container) return;
+
+      const toast = document.createElement("div");
+      toast.className = `toast ${type}`;
+
+      let icon = "ℹ️";
+      if (type === "success") icon = "✅";
+      if (type === "danger") icon = "❌";
+      if (type === "warning") icon = "⚠️";
+
+      toast.innerHTML = `<span>${icon}</span> <span>${escapeHtml(message)}</span>`;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.animation = "toastOut 0.3s forwards";
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    function openConfirmDialog({ title, message, confirmBtnText = "Confirm", danger = false, onConfirm }) {
+      const modal = document.createElement("div");
+      modal.className = "modal-overlay open";
+      modal.id = "confirm-dialog-modal";
+      modal.innerHTML = `
+        <div class="modal-content" style="max-width: 440px;">
+          <div class="modal-header">
+            <h3>${escapeHtml(title)}</h3>
+            <button class="btn btn-outline btn-sm" onclick="closeModal('confirm-dialog-modal')">✕</button>
+          </div>
+          <div class="modal-body">
+            <p style="font-size: 0.95rem; color: var(--text-muted);">${escapeHtml(message)}</p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('confirm-dialog-modal')">Cancel</button>
+            <button class="btn ${danger ? 'btn-danger' : 'btn-primary'}" id="confirm-dialog-action-btn">
+              ${escapeHtml(confirmBtnText)}
+            </button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      document.getElementById("confirm-dialog-action-btn")?.addEventListener("click", () => {
+        closeModal("confirm-dialog-modal");
+        if (typeof onConfirm === "function") onConfirm();
+      });
+    }
+
+    function closeModal(modalId) {
+      const el = document.getElementById(modalId);
+      if (el) el.remove();
+    }
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // Global Key Listener (Esc to close open modals)
+    window.addEventListener("keydown", e => {
+      if (e.key === "Escape") {
+        const modals = document.querySelectorAll(".modal-overlay.open");
+        if (modals.length > 0) {
+          modals[modals.length - 1].remove();
+        }
+      }
+    });
+
+    // Close modal on clicking outside modal-content
+    document.addEventListener("click", e => {
+      if (e.target.classList.contains("modal-overlay")) {
+        e.target.remove();
+      }
+    });
+
+    // Initial App Render
+    renderApp();
+  </script>
+</body>
+</html>
